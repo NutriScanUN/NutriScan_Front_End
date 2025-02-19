@@ -1,22 +1,18 @@
-import './App.css'
+import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Route, Routes } from 'react-router'
-import RegisterLayout from './pages/register/RegisterLayout'
-import LogIn from './pages/register/LogIn'
-import SignIn from './pages/register/SignIn'
+import { Route, Routes } from 'react-router'; // Usa 'react-router-dom' en lugar de 'react-router'
+import RegisterLayout from './pages/register/pages/RegisterLayout';
+import RoutesAuthentication from './pages/register/Routes';
 
 function App() {
-
   return (
-    <>
-      <Routes>
-        <Route  element={<RegisterLayout />}>
-          <Route path='/login' element={<LogIn />}/>
-          <Route path='/signin' element={<SignIn />}/>
-        </Route>
-      </Routes>
-    </>
-  )
+    <Routes>
+      <Route element={<RegisterLayout />}>
+        {/* Aquí debes expandir las rutas de RoutesAuthentication */}
+        <Route path='*' element={<RoutesAuthentication />} />
+      </Route>
+    </Routes>
+  );
 }
 
-export default App
+export default App;

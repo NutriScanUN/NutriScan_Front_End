@@ -2,20 +2,52 @@ import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
+import { createUserWithEmailAndPassword } from "../../../services/userService";
+import { Navigate } from "react-router";
 
 const SignIn = () => {
 
   const [validated, setValidated] = useState(false);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
+      setValidated(true);
+      return;
     }
 
+    const nombres = form.username.value;
+    const email = form.email.value;
+    const password = form.password.value;
+    const fechaNacimiento = form.birthdate.value;
+
+    try {
+      const userData = {
+        nombres,
+        email,
+        url_imagen: "", // Se puede agregar luego
+        // fecha_nacimiento: Timestamp .fromDate(new Date(fechaNacimiento)),
+        rol: "ESTANDAR", // Valor predeterminado
+        ajustes: {},
+      };
+      // Crear usuario en Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(email, password, userData);
+      console.log("🚀 ~ handleSubmit ~ userCredential:", userCredential)
+
+      // Formatear datos para Firestore
+
+      // Redirigir a la página de login
+      // Navigate("/login");
+    } catch (error: any) {
+      console.error("Error en el registro:", error.message);
+      alert(`Error: ${error.message}`);
+    }
     setValidated(true);
-  };
+  };  
+
 
   return (
     <Form noValidate validated={validated} onSubmit={handleSubmit} className="p-5 bg-dark-subtle rounded-4">
