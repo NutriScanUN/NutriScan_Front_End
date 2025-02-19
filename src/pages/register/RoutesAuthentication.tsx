@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router';
+import { Route } from 'react-router';
 import LogIn from './pages/LogIn';
 import SignIn from './pages/SignIn';
 import RegisterLayout from './pages/RegisterLayout';

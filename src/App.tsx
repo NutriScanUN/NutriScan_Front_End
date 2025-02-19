@@ -13,11 +13,6 @@ function App() {
         <RoutesAuthentication/>
         <Route element={<NavigationLayout />}>
           <Route index element={<Button>Hello</Button>} />
-          <Route index element={<Button>Hello</Button>} />
-          <Route index element={<Button>Hello</Button>} />
-          <Route index element={<Button>Hello</Button>} />
-          <Route index element={<Button>Hello</Button>} />
-          <Route index element={<Button>Hello</Button>} />
         </Route>
       </Routes>
     </>
