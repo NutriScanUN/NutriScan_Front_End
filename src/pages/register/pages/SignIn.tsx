@@ -3,11 +3,13 @@ import Button from "react-bootstrap/Button";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 import { createUserWithEmailAndPassword } from "../../../services/userService";
-import { Navigate } from "react-router";
+import { useNavigate } from "react-router";
+import { Timestamp } from 'firebase/firestore'
 
 const SignIn = () => {
 
   const [validated, setValidated] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -29,7 +31,7 @@ const SignIn = () => {
         nombres,
         email,
         url_imagen: "", // Se puede agregar luego
-        // fecha_nacimiento: Timestamp .fromDate(new Date(fechaNacimiento)),
+        fecha_nacimiento: Timestamp.fromDate(new Date(fechaNacimiento)),
         rol: "ESTANDAR", // Valor predeterminado
         ajustes: {},
       };
@@ -40,7 +42,7 @@ const SignIn = () => {
       // Formatear datos para Firestore
 
       // Redirigir a la página de login
-      // Navigate("/login");
+      navigate("/login");
     } catch (error: any) {
       console.error("Error en el registro:", error.message);
       alert(`Error: ${error.message}`);
