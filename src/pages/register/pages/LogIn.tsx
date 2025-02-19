@@ -1,8 +1,9 @@
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
-import { signInWithEmailAndPassword } from "../../../services/userService";
+import { auth } from "../../../firebase";
 
 const LogIn = () => {
   const [validated, setValidated] = useState(false);
@@ -22,8 +23,9 @@ const LogIn = () => {
     const password = formData.get("password") as string;
   
     try {
-      const userCredential = await signInWithEmailAndPassword(email, password);
-      console.log("🚀 ~ handleSubmit ~ userCredential:", userCredential)
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      console.log("Usuario autenticado:", userCredential.user);
+      
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
       alert("Error de autenticación. Verifica tus credenciales.");

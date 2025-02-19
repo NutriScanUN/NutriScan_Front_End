@@ -2,9 +2,10 @@ import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
-import { createUserWithEmailAndPassword } from "../../../services/userService";
 import { useNavigate } from "react-router";
-import { Timestamp } from 'firebase/firestore'
+import { serverTimestamp, Timestamp } from 'firebase/firestore'
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../../firebase";
 
 const SignIn = () => {
 
@@ -27,19 +28,21 @@ const SignIn = () => {
     const fechaNacimiento = form.birthdate.value;
 
     try {
+      // Crear usuario en Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Formatear datos para Firestore
       const userData = {
+        uid: user.uid,
         nombres,
         email,
         url_imagen: "", // Se puede agregar luego
         fecha_nacimiento: Timestamp.fromDate(new Date(fechaNacimiento)),
+        fecha_registro: serverTimestamp(),
         rol: "ESTANDAR", // Valor predeterminado
         ajustes: {},
       };
-      // Crear usuario en Firebase Authentication
-      const userCredential = await createUserWithEmailAndPassword(email, password, userData);
-      console.log("🚀 ~ handleSubmit ~ userCredential:", userCredential)
-
-      // Formatear datos para Firestore
 
       // Redirigir a la página de login
       navigate("/login");
@@ -47,7 +50,6 @@ const SignIn = () => {
       console.error("Error en el registro:", error.message);
       alert(`Error: ${error.message}`);
     }
-    setValidated(true);
   };  
 
 
