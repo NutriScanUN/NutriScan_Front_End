@@ -4,9 +4,14 @@ import Button from "react-bootstrap/Button";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 import { auth } from "../../../firebase";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../../stateManagement/store";
+import { login } from "../../../stateManagement/authSlice";
+import { Timestamp } from "firebase/firestore";
 
 const LogIn = () => {
   const [validated, setValidated] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Evita el comportamiento por defecto del formulario
@@ -18,14 +23,18 @@ const LogIn = () => {
       return;
     }
   
-    const formData = new FormData(form);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
+    const email = form.email.value;
+    const password = form.password.value;
   
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log("Usuario autenticado:", userCredential.user);
-      
+      dispatch(login({
+        uid:userCredential.user.uid ?? '',
+        name:userCredential.user.displayName ?? '',
+        email:userCredential.user.email ?? '',
+        fecha_nacimiento: new Date()
+      }))      
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
       alert("Error de autenticación. Verifica tus credenciales.");
@@ -53,7 +62,7 @@ const LogIn = () => {
         <Form.Control.Feedback className="px-3 pb-1" type="invalid">La contraseña es obligatoria</Form.Control.Feedback>
       </FloatingLabel>
       <Button type="submit">
-        Registrarse
+        Log In
       </Button>
     </Form>
   );

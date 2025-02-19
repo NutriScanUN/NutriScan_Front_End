@@ -4,12 +4,12 @@ import './index.css'
 import App from './App.tsx'
 import { BrowserRouter } from 'react-router'
 import { Provider } from 'react-redux'
-import strore from './stateManagement/strore.ts'
+import store from './stateManagement/store.ts'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <Provider store={strore}>
+      <Provider store={store}>
         <App />
       </Provider>
     </BrowserRouter>

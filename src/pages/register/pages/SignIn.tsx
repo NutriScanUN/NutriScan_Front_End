@@ -6,11 +6,15 @@ import { useNavigate } from "react-router";
 import { serverTimestamp, Timestamp } from 'firebase/firestore'
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../firebase";
+import { login } from "../../../stateManagement/authSlice";
+import { AppDispatch } from "../../../stateManagement/store";
+import { useDispatch } from "react-redux";
 
 const SignIn = () => {
 
   const [validated, setValidated] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -43,6 +47,13 @@ const SignIn = () => {
         rol: "ESTANDAR", // Valor predeterminado
         ajustes: {},
       };
+      
+      dispatch(login({
+        uid:userCredential.user.uid ?? '',
+        name:userCredential.user.displayName ?? '',
+        email:userCredential.user.email ?? '',
+        fecha_nacimiento:new Date(fechaNacimiento),
+      }))      
 
       // Redirigir a la página de login
       navigate("/login");
