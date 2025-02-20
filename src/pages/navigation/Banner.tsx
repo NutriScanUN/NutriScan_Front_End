@@ -39,16 +39,13 @@ const Banner = ({registered = false, rol = Roles.ESTANDAR}: Props) => {
                 <Link to="profile" style={{textDecoration: "none"}}>
                   <Nav.Link href="profile">Perfil</Nav.Link>
                 </Link>
-                <Link to="profile/store" style={{textDecoration: "none"}}>
-                  <Nav.Link href="profile/store">Tienda</Nav.Link>
-                </Link>
                 {
                   rol == Roles.ESTANDAR ? 
-                  <Link to="profile/store" style={{textDecoration: "none"}}>
+                  <Link to="compra" style={{textDecoration: "none"}}>
                     <Nav.Link href="compra">Compra</Nav.Link>
                   </Link>
                   :
-                  <Link to="profile/store" style={{textDecoration: "none"}}>
+                  <Link to="store" style={{textDecoration: "none"}}>
                     <Nav.Link href="store">Tienda</Nav.Link>
                   </Link>
                 }

@@ -9,6 +9,7 @@ import { auth } from "../../../firebase";
 import { login } from "../../../stateManagement/authSlice";
 import { AppDispatch } from "../../../stateManagement/store";
 import { useDispatch } from "react-redux";
+import { Roles } from "../../perfil/models/user";
 
 const SignIn = () => {
 
@@ -53,6 +54,7 @@ const SignIn = () => {
         uid:userCredential.user.uid ?? '',
         name:userCredential.user.displayName ?? '',
         email:userCredential.user.email ?? '',
+        rol: Roles.ESTANDAR,
         fecha_nacimiento:new Date(fechaNacimiento),
       }))      
 
