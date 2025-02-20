@@ -7,6 +7,7 @@ import { auth } from "../../../firebase";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../stateManagement/store";
 import { login } from "../../../stateManagement/authSlice";
+import { Roles } from "../../perfil/models/user";
 
 const LogIn = () => {
   const [validated, setValidated] = useState(false);
@@ -32,6 +33,7 @@ const LogIn = () => {
         uid:userCredential.user.uid ?? '',
         name:userCredential.user.displayName ?? '',
         email:userCredential.user.email ?? '',
+        rol: Roles.ESTANDAR,
         fecha_nacimiento: new Date()
       }))      
     } catch (error) {
