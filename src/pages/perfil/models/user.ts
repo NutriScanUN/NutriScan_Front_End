@@ -11,6 +11,7 @@ export interface User {
     fecha_nacimiento: Date|string;
     rol: Roles;
     photoURL?: string;
+    ajustes?: object;
   }
   
 export const DATOUSERTEST =  {

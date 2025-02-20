@@ -6,8 +6,7 @@ import Form from "react-bootstrap/Form";
 import { auth } from "../../../firebase";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../stateManagement/store";
-import { login } from "../../../stateManagement/authSlice";
-import { Roles } from "../../perfil/models/user";
+import { ObtenerUsuario } from "../../../utils/UserUtils";
 
 const LogIn = () => {
   const [validated, setValidated] = useState(false);
@@ -29,13 +28,7 @@ const LogIn = () => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log("Usuario autenticado:", userCredential.user);
-      dispatch(login({
-        uid:userCredential.user.uid ?? '',
-        name:userCredential.user.displayName ?? '',
-        email:userCredential.user.email ?? '',
-        rol: Roles.ESTANDAR,
-        fecha_nacimiento: new Date()
-      }))      
+      ObtenerUsuario(userCredential.user.uid,dispatch)
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
       alert("Error de autenticación. Verifica tus credenciales.");
