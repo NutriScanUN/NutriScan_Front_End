@@ -7,7 +7,6 @@ import { auth } from "../../../firebase";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../stateManagement/store";
 import { login } from "../../../stateManagement/authSlice";
-import { Timestamp } from "firebase/firestore";
 
 const LogIn = () => {
   const [validated, setValidated] = useState(false);

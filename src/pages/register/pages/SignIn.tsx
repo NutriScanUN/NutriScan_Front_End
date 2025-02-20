@@ -3,7 +3,7 @@ import Button from "react-bootstrap/Button";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router";
-import { serverTimestamp, Timestamp } from 'firebase/firestore'
+import { serverTimestamp, Timestamp } from 'firebase/firestore';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../firebase";
 import { login } from "../../../stateManagement/authSlice";
@@ -47,6 +47,7 @@ const SignIn = () => {
         rol: "ESTANDAR", // Valor predeterminado
         ajustes: {},
       };
+      console.log("🚀 ~ handleSubmit ~ userData:", userData)
       
       dispatch(login({
         uid:userCredential.user.uid ?? '',

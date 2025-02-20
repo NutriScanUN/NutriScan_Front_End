@@ -2,8 +2,12 @@
 interface Props{
   products:any
 }
-const ProductsTable = (products) => {
 
+export const ProductsTable:React.FC<Props> = (props) => {
+  return (
+    <div>{props.products}</div>
+  )
 }
+
 
 export default ProductsTable;
