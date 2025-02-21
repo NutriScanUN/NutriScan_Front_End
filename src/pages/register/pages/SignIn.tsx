@@ -5,8 +5,6 @@ import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../firebase";
-import { AppDispatch } from "../../../stateManagement/store";
-import { useDispatch } from "react-redux";
 import { Roles, User } from "../../perfil/models/user";
 import { CrearUsuario } from "../../../utils/UserUtils";
 

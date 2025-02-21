@@ -20,6 +20,7 @@ const ActualizarUsuario = async (
 const ObtenerUsuario = async (userId: string, dispatch: any) => {
   try {
     const user = await getUser(userId);
+    console.log("🚀 ~ ObtenerUsuario ~ user:", user)
     dispatch(login(user));
     return user
   } catch (error) {
