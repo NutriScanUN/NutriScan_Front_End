@@ -1,0 +1,35 @@
+import { useNavigate } from "react-router";
+import { Button, Card } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { Roles, User } from "../../perfil/models/user";
+import { ActualizarUsuario } from "../../../utils/UserUtils";
+import { RootState } from "../../../stateManagement/store";
+
+const PasarelaPago = () => {
+  const uid = useSelector((state:RootState) => state.auth.user?.uid ?? '')
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handlePurchase = () => {
+    const usuario: Partial<User> = { rol: Roles.PAGADO }; // Actualiza el rol del usuario
+    ActualizarUsuario(uid,usuario,dispatch)
+    navigate("/compra/receive");
+  };
+
+  return (
+    <div className="d-flex justify-content-center align-items-center vh-100">
+      <Card className="p-4 text-center" style={{ width: "300px" }}>
+        <Card.Body>
+          <Card.Title>Plan Tienda</Card.Title>
+          <Card.Text>Precio: 40.000 COP</Card.Text>
+          <Button variant="primary" onClick={handlePurchase}>
+            Comprar
+          </Button>
+        </Card.Body>
+      </Card>
+    </div>
+  );
+}
+
+export default PasarelaPago
+

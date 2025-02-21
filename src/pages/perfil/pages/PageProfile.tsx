@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Button, Form, FloatingLabel } from "react-bootstrap";
 import { AppDispatch, RootState } from "../../../stateManagement/store";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUser } from "../../../stateManagement/authSlice";
+import { ActualizarUsuario } from "../../../utils/UserUtils";
+import { User } from "../models/user";
 
 const ProfileForm = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -22,14 +23,15 @@ const ProfileForm = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Perfil actualizado:", profile);
-    dispatch(updateUser({
+    const usuario = {
         uid: profile?.uid ?? '',
         name: profile?.name ?? '',
         email: profile?.email ?? '',
         fecha_nacimiento: profile?.fecha_nacimiento 
             ? profile.fecha_nacimiento.toString().split("T")[0] 
             : ""
-    }));    
+    } as User;
+    ActualizarUsuario(profile?.uid ?? '',usuario,dispatch)
     setIsModified(false);
   };
 

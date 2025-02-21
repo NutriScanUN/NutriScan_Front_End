@@ -1,11 +1,13 @@
 import { Container, Nav, Navbar } from "react-bootstrap";
 import { Link } from "react-router";
+import { Roles } from "../perfil/models/user";
 
 interface Props {
   registered?: boolean;
+  rol?: Roles;
 }
 
-const Banner = ({registered = false}: Props) => {
+const Banner = ({registered = false, rol = Roles.ESTANDAR}: Props) => {
 
 
   return (
@@ -23,21 +25,30 @@ const Banner = ({registered = false}: Props) => {
             <Link to="search" style={{textDecoration: "none"}}>
               <Nav.Link href="search">Scanner/Buscador</Nav.Link>
             </Link>
-            <Link to="profile" style={{textDecoration: "none"}}>
-              <Nav.Link href="profile">Perfil</Nav.Link>
-            </Link>
-            <Link to="profile/store" style={{textDecoration: "none"}}>
-              <Nav.Link href="profile/store">Tienda</Nav.Link>
-            </Link>
             {
-              !registered &&
+              !registered ?
               <>
-              <Link to="login" style={{textDecoration: "none"}}>
-              <Nav.Link href="login">Ingresar</Nav.Link>
-              </Link>
-              <Link to="signin" style={{textDecoration: "none"}}>
-                <Nav.Link href="signin">Registrarse</Nav.Link>
-              </Link>
+                <Link to="login" style={{textDecoration: "none"}}>
+                <Nav.Link href="login">Ingresar</Nav.Link>
+                </Link>
+                <Link to="signin" style={{textDecoration: "none"}}>
+                  <Nav.Link href="signin">Registrarse</Nav.Link>
+                </Link>
+              </>:
+              <>
+                <Link to="profile" style={{textDecoration: "none"}}>
+                  <Nav.Link href="profile">Perfil</Nav.Link>
+                </Link>
+                {
+                  rol == Roles.ESTANDAR ? 
+                  <Link to="compra" style={{textDecoration: "none"}}>
+                    <Nav.Link href="compra">Compra</Nav.Link>
+                  </Link>
+                  :
+                  <Link to="store" style={{textDecoration: "none"}}>
+                    <Nav.Link href="store">Tienda</Nav.Link>
+                  </Link>
+                }
               </>
             }
           </Nav>

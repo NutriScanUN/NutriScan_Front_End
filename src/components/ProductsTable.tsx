@@ -8,9 +8,10 @@ interface Props{
 const ProductsTable = ({products}:Props) => {
   return (
     <Container fluid>
-
+      {products[0].nombre}
     </Container>
   );
 }
+
 
 export default ProductsTable;

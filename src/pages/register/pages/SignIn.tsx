@@ -3,18 +3,17 @@ import Button from "react-bootstrap/Button";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router";
-import { serverTimestamp, Timestamp } from 'firebase/firestore'
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../firebase";
-import { login } from "../../../stateManagement/authSlice";
 import { AppDispatch } from "../../../stateManagement/store";
 import { useDispatch } from "react-redux";
+import { Roles, User } from "../../perfil/models/user";
+import { CrearUsuario } from "../../../utils/UserUtils";
 
 const SignIn = () => {
 
   const [validated, setValidated] = useState(false);
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -38,23 +37,14 @@ const SignIn = () => {
 
       // Formatear datos para Firestore
       const userData = {
-        uid: user.uid,
-        nombres,
-        email,
-        url_imagen: "", // Se puede agregar luego
-        fecha_nacimiento: Timestamp.fromDate(new Date(fechaNacimiento)),
-        fecha_registro: serverTimestamp(),
-        rol: "ESTANDAR", // Valor predeterminado
-        ajustes: {},
-      };
-      
-      dispatch(login({
-        uid:userCredential.user.uid ?? '',
-        name:userCredential.user.displayName ?? '',
-        email:userCredential.user.email ?? '',
-        fecha_nacimiento:new Date(fechaNacimiento),
-      }))      
+        uid: user?.uid ?? '',
+        name: nombres ?? '',
+        email: email ?? '',
+        fecha_nacimiento: new Date(fechaNacimiento),
+        rol: Roles.ESTANDAR,
+      } as User;
 
+      CrearUsuario(userData)
       // Redirigir a la página de login
       navigate("/login");
     } catch (error: any) {

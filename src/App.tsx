@@ -5,6 +5,7 @@ import NavigationLayout from './pages/navigation/NavigationLayout';
 import { Button } from 'react-bootstrap';
 import RoutesAuthentication from './pages/register/RoutesAuthentication';
 import { RoutesProfile } from './pages/perfil/RoutesProfile';
+import { RoutesCompra } from './pages/compra/RoutesCompra';
 
 function App() {
 
@@ -13,6 +14,7 @@ function App() {
       <Route element={<NavigationLayout />}>
         <Route path="/*" element={<RoutesAuthentication />} />
         <Route path="/profile/*" element={<RoutesProfile />} />
+        <Route path="/compra/*" element={<RoutesCompra />} />
         <Route path="/" element={<Button>Hello</Button>} />
       </Route>
     </Routes>
