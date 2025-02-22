@@ -1,12 +1,16 @@
+import { Container } from "react-bootstrap";
+import { DBProduct } from "./types";
 
 interface Props{
-  products:any
+  products: DBProduct[]
 }
 
-export const ProductsTable:React.FC<Props> = (props) => {
+const ProductsTable = ({products}:Props) => {
   return (
-    <div>{props.products}</div>
-  )
+    <Container fluid>
+      {products[0].nombre}
+    </Container>
+  );
 }
 
 
