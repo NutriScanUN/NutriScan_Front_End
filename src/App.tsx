@@ -1,11 +1,12 @@
-import './App.css'
+import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Route, Routes } from 'react-router'
+import { Route, Routes } from 'react-router';
 import NavigationLayout from './pages/navigation/NavigationLayout';
-import { Button } from 'react-bootstrap';
 import RoutesAuthentication from './pages/register/RoutesAuthentication';
 import { RoutesProfile } from './pages/perfil/RoutesProfile';
 import { RoutesCompra } from './pages/compra/RoutesCompra';
+import { RoutesStore } from './pages/perfil_tienda/RoutesStore';
+import { RoutesSearching } from './pages/busqueda_producto/RoutesSearching';
 
 function App() {
 
@@ -15,7 +16,8 @@ function App() {
         <Route path="/*" element={<RoutesAuthentication />} />
         <Route path="/profile/*" element={<RoutesProfile />} />
         <Route path="/compra/*" element={<RoutesCompra />} />
-        <Route path="/" element={<Button>Hello</Button>} />
+        <Route path="/store/*" element={<RoutesStore />} />
+        <Route path="*" element={<RoutesSearching />} />
       </Route>
     </Routes>
   )

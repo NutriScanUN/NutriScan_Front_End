@@ -1,4 +1,4 @@
-import { User } from "../pages/perfil/models/user";
+import { DATOUSERTEST, User } from "../models/user";
 
 // const API_BASE_URL = process.env.BASE_URL_USER_MS;
 
@@ -15,6 +15,8 @@ export const createUser = async (userData: User) => {
 };
 
 export const getUser = async (uid: string) => {
+    console.log("🚀 ~ getUser ~ uid:", uid)
+    return DATOUSERTEST
     try {
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -34,7 +36,7 @@ export const getUser = async (uid: string) => {
             redirect: "follow"
         };
 
-        fetch("http://34.2.5.32:3003/graphql", requestOptions)
+        fetch("http://localhost:3003/graphql", requestOptions)
         .then((response) => response.json())  // 👈 Parseamos JSON en lugar de .text()
         .then((result) => {
             // Transformar fecha si viene en formato timestamp
@@ -46,6 +48,7 @@ export const getUser = async (uid: string) => {
             console.log("result",result);
         })
         .catch((error) => console.error(error));
+        return DATOUSERTEST
     } catch (error) {
         console.error("Error al obtener usuario:", error);
         throw error;

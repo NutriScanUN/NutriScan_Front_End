@@ -1,4 +1,4 @@
-import { User } from "../pages/perfil/models/user";
+import { User } from "../models/user";
 import { checkUserExists, createUser, deleteUser, getUser, updateUserById } from "../services/userService";
 import { login, logout, updateUser, } from "../stateManagement/authSlice";
 

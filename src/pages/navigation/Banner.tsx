@@ -1,6 +1,6 @@
 import { Container, Nav, Navbar } from "react-bootstrap";
 import { Link } from "react-router";
-import { Roles } from "../perfil/models/user";
+import { Roles } from "../../models/user";
 
 interface Props {
   registered?: boolean;

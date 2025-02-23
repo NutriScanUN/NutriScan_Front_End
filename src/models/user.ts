@@ -4,6 +4,16 @@ export enum Roles {
   PAGADO = "tienda",
 }
 
+export interface UserQuery {
+    uid: string;
+    name: string;
+    email: string;
+    fecha_nacimiento: { seconds: number; nanoseconds: number };
+    rol: Roles;
+    photoURL?: string;
+    ajustes?: object;
+  }
+
 export interface User {
     uid: string;
     name: string;

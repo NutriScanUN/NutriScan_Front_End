@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Table, Button } from "react-bootstrap";
-import { consumptionHistoryDataTest } from "../models/HistorialConsumption";
+import { consumptionHistoryDataTest } from "../../../models/HistorialConsumption";
 
 const ConsumptionHistoryTable: React.FC = () => {
     const [consumptionHistoryData, setConsumptionHistoryData] = useState(consumptionHistoryDataTest);
@@ -28,7 +28,7 @@ const ConsumptionHistoryTable: React.FC = () => {
             <tr key={item.id}>
               <td>{item.id}</td>
               <td>{item.id_producto}</td>
-              <td>{new Date(item.fecha_consumo.seconds * 1000).toLocaleDateString()}</td>
+              <td>{new Date(item.fecha_consumo.getTime() * 1000).toLocaleDateString()}</td>
               <td>{item.cantidad_consumida}</td>
               <td>{JSON.stringify(item.nutrientes_ingeridos)}</td>
               <td>

@@ -5,7 +5,7 @@ import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../firebase";
-import { Roles, User } from "../../perfil/models/user";
+import { Roles, User } from "../../../models/user";
 import { CrearUsuario } from "../../../utils/UserUtils";
 
 const SignIn = () => {

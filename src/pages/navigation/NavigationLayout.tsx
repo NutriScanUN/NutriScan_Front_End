@@ -4,7 +4,7 @@ import { Outlet } from "react-router";
 import Footer from "./Footer";
 import { useSelector } from "react-redux";
 import { RootState } from "../../stateManagement/store";
-import { Roles } from "../perfil/models/user";
+import { Roles } from "../../models/user";
 
 const NavigationLayout = () => {
   const authenticado = useSelector((state: RootState) => state.auth.isAuthenticated)
