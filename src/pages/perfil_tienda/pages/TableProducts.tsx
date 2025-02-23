@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { Table, Button, Modal, Form } from "react-bootstrap";
-import { ProductoReferencia } from "../../../models/Product";
+import { DBProduct } from "../../../models/Product";
 import { useNavigate } from "react-router";
 
 
 const TableProducts: React.FC = () => {
-    const [productos, setProductos] = useState<ProductoReferencia[]>([]);
-    const [productosFiltrados, setProductosFiltrados] = useState<ProductoReferencia[]>([]);
+    const [productos, setProductos] = useState<DBProduct[]>([]);
+    const [productosFiltrados, setProductosFiltrados] = useState<DBProduct[]>([]);
     const [busqueda, setBusqueda] = useState("");
     const [showModal, setShowModal] = useState(false);
-    const [productoEditando, setProductoEditando] = useState<ProductoReferencia | null>(null);
+    const [productoEditando, setProductoEditando] = useState<DBProduct | null>(null);
     const navigate = useNavigate();
   
     useEffect(() => {
-      const productosEjemplo: ProductoReferencia[] = [
-        { producto_id: 1, tienda_id: 101, longitud: "20cm", referencia: "REF123", nombre: "Producto Alpha", descripcion: "Descripción del producto 1", foto: "https://via.placeholder.com/50" },
-        { producto_id: 2, tienda_id: 102, longitud: "30cm", referencia: "REF456", nombre: "Beta Pro", descripcion: "Descripción del producto 2", foto: "https://via.placeholder.com/50" },
-        { producto_id: 3, tienda_id: 103, longitud: "15cm", referencia: "REF789", nombre: "Gamma Plus", descripcion: "Descripción del producto 3", foto: "https://via.placeholder.com/50" }
+      const productosEjemplo: DBProduct[] = [
+        { id_producto: 1, id_tienda: 101, referencia: "REF123", nombre: "Producto Alpha", descripcion: "Descripción del producto 1", url_imagen: "https://via.placeholder.com/50" },
+        { id_producto: 2, id_tienda: 102, referencia: "REF456", nombre: "Beta Pro", descripcion: "Descripción del producto 2", url_imagen: "https://via.placeholder.com/50" },
+        { id_producto: 3, id_tienda: 103, referencia: "REF789", nombre: "Gamma Plus", descripcion: "Descripción del producto 3", url_imagen: "https://via.placeholder.com/50" }
       ];
       setProductos(productosEjemplo);
       setProductosFiltrados(productosEjemplo);
