@@ -3,7 +3,7 @@ import { Button, Form, FloatingLabel } from "react-bootstrap";
 import { AppDispatch, RootState } from "../../../stateManagement/store";
 import { useDispatch, useSelector } from "react-redux";
 import { ActualizarUsuario } from "../../../utils/UserUtils";
-import { User } from "../models/user";
+import { User } from "../../../models/user";
 
 const ProfileForm = () => {
   const user = useSelector((state: RootState) => state.auth.user);

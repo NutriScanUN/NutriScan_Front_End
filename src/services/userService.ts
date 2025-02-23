@@ -1,11 +1,9 @@
-// import axios from "axios";
+import { DATOUSERTEST, User } from "../models/user";
 
-import { DATOUSERTEST, User } from "../pages/perfil/models/user";
-
-const API_BASE_URL = process.env.BASE_URL_USER_MS;
+// const API_BASE_URL = process.env.BASE_URL_USER_MS;
 
 export const createUser = async (userData: User) => {
-    console.log("🚀 ~ API_BASE_URL:", API_BASE_URL)
+    // console.log("🚀 ~ API_BASE_URL:", API_BASE_URL)
     try {
         // const response = await axios.post(API_BASE_URL, userData);
         // return response.data;
@@ -17,10 +15,39 @@ export const createUser = async (userData: User) => {
 };
 
 export const getUser = async (uid: string) => {
+    console.log("🚀 ~ getUser ~ uid:", uid)
+    return DATOUSERTEST
     try {
-        // const response = await axios.get(`${API_BASE_URL}/${uid}`);
-        // return response.data;
-        DATOUSERTEST.uid = uid
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        const raw = JSON.stringify({
+            "query": "query Query($userQueryId: ID!) {\n  userQuery(id: $userQueryId) {\n    data {\n      url_imagen\n      uid\n      nombres\n      fecha_registro\n      fecha_nacimiento\n      email\n    }\n  }\n}\n",
+            "variables": {
+                "userQueryId": "123456"
+            },
+            "operationName": "Query"
+        });
+
+        const requestOptions: RequestInit  = {
+            method: "POST",
+            headers: myHeaders,
+            body: raw,
+            redirect: "follow"
+        };
+
+        fetch("http://localhost:3003/graphql", requestOptions)
+        .then((response) => response.json())  // 👈 Parseamos JSON en lugar de .text()
+        .then((result) => {
+            // Transformar fecha si viene en formato timestamp
+            if (result.data?.userQuery?.data?.fecha_nacimiento?._seconds) {
+                result.data.userQuery.data.fecha_nacimiento = new Date(
+                    result.data.userQuery.data.fecha_nacimiento._seconds * 1000
+                ).toISOString();
+            }
+            console.log("result",result);
+        })
+        .catch((error) => console.error(error));
         return DATOUSERTEST
     } catch (error) {
         console.error("Error al obtener usuario:", error);

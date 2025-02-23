@@ -1,4 +1,4 @@
-import { User } from "../pages/perfil/models/user";
+import { User } from "../models/user";
 import { checkUserExists, createUser, deleteUser, getUser, updateUserById } from "../services/userService";
 import { login, logout, updateUser, } from "../stateManagement/authSlice";
 
@@ -20,6 +20,7 @@ const ActualizarUsuario = async (
 const ObtenerUsuario = async (userId: string, dispatch: any) => {
   try {
     const user = await getUser(userId);
+    console.log("🚀 ~ ObtenerUsuario ~ user:", user)
     dispatch(login(user));
     return user
   } catch (error) {

@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router";
 import { Button, Card } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { Roles, User } from "../../perfil/models/user";
+import { Roles, User } from "../../../models/user";
 import { ActualizarUsuario } from "../../../utils/UserUtils";
 import { RootState } from "../../../stateManagement/store";
 

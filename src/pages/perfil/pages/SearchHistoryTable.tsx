@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { searchHistoryDataTest } from "../models/HistorialSearch";
+import { searchHistoryDataTest } from "../../../models/HistorialSearch";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const SearchHistoryTable: React.FC = () => {
@@ -30,7 +30,7 @@ const SearchHistoryTable: React.FC = () => {
           {searchHistoryData.map((record) => (
             <tr key={record.id}>
               <td>{record.id}</td>
-              <td>{new Date(record.fecha_busqueda.seconds * 1000).toLocaleString()}</td>
+              <td>{new Date(record.fecha_busqueda.getTime() * 1000).toLocaleString()}</td>
               <td>{record.id_producto}</td>
               <td>{record.redireccion_tienda ? 'Sí' : 'No'}</td>
               <td>{record.id_tienda || 'N/A'}</td>

@@ -7,10 +7,14 @@ import { auth } from "../../../firebase";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../stateManagement/store";
 import { ObtenerUsuario } from "../../../utils/UserUtils";
+import { checkUserExists } from "../../../services/userService";
+import { useNavigate } from "react-router";
+import { Alert } from "react-bootstrap";
 
 const LogIn = () => {
   const [validated, setValidated] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Evita el comportamiento por defecto del formulario
@@ -27,8 +31,13 @@ const LogIn = () => {
   
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      console.log("Usuario autenticado:", userCredential.user);
-      ObtenerUsuario(userCredential.user.uid,dispatch)
+      if(await checkUserExists(userCredential.user.uid)){
+        console.log("Usuario autenticado:", userCredential.user);
+        ObtenerUsuario(userCredential.user.uid,dispatch)
+      }else{
+        Alert(<p>No estas registrado.</p>)
+        navigate('/signIn')
+      }
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
       alert("Error de autenticación. Verifica tus credenciales.");
