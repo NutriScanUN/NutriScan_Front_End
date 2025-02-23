@@ -8,13 +8,12 @@ interface Props{
 const ProductMiniature = ({product}: Props) => {
   return (
     <Card style={{ width: '18rem' }}>
-      <Card.Img variant="top" src="holder.js/100px180" />
+      <Card.Img variant="top" src={product.url_imagen} />
       <Card.Body>
-        <Card.Title>Card Title</Card.Title>
+        <Card.Title>{product.nombre}</Card.Title>
         <Card.Text>
-          {product.nombre}
+          {product.referencia}
         </Card.Text>
-        <Button variant="primary">Go somewhere</Button>
       </Card.Body>
     </Card>
   );
