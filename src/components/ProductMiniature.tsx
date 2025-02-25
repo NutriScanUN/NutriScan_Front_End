@@ -21,3 +21,4 @@ const ProductMiniature = ({product}: Props) => {
 };
 
 export default ProductMiniature;
+ 

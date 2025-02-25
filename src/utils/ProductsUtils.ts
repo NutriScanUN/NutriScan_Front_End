@@ -1,4 +1,4 @@
-import { DBProduct } from "../models/Product";
+import { DBProduct, productOffRes } from "../models/Product";
 import { GraphQLQuery } from "../models/Query";
 
 interface ProductQueryRes{
@@ -12,7 +12,7 @@ interface ProductListQueryRes{
   }
 }
 
-//const STORE_API = import.meta.env.VITE_TEST_STORE_URI;
+const STORE_API = import.meta.env.VITE_TEST_STORE_URI;
 const API_URI = import.meta.env.VITE_API_GATEWAY_URI;
 
 const DBProductQuery = `query GetProduct($getProductId: ID!) {
@@ -95,22 +95,22 @@ export async function getAllProducts(){
 
 //TODO: IMPLEMENT CORRECTLY
 export async function getOffProduct(reference: string){
-  const productQuery: GraphQLQuery = {
-    query: DBProductQuery,
-    operationName: "GetProduct",
-    variables: { getProductId: reference }
-  };
+  // const productQuery: GraphQLQuery = {
+  //   query: DBProductQuery,
+  //   operationName: "GetProduct",
+  //   variables: { getProductId: reference }
+  // };
 
-  const productRequest: RequestInit = {
-    ...REQUEST,
-    body: JSON.stringify(productQuery)
-  }
+  // const productRequest: RequestInit = {
+  //   ...REQUEST,
+  //   body: JSON.stringify(productQuery)
+  // }
 
   try{
-    const resp = await fetch(API_URI, productRequest);
+    const resp = await fetch(`${STORE_API}/off/${reference}`);
 
     if(resp.ok){
-      return (await resp.json() as ProductQueryRes).data.getProduct;
+      return (await resp.json() as productOffRes);
     }else{
       throw Error(`${resp.status}: ${resp.statusText}`);
     }

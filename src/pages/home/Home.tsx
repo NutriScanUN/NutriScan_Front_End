@@ -10,7 +10,7 @@ const Home = () => {
   useEffect(() => {
     testDBProducts(20).then(
       examples =>{
-        setProducts(examples);
+        if(examples) setProducts(examples);
       }
     )
   }, []);
