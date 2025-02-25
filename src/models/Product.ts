@@ -36,7 +36,6 @@ export interface productOffRes{
 }
 
 export interface DBProduct{
-  id_tienda?: number;
   id_producto:  number;
   referencia: string;
   nombre?: string;

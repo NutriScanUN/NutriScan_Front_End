@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Table, Button, Modal, Form } from "react-bootstrap";
 import { DBProduct } from "../../../models/Product";
 import { useNavigate } from "react-router";
+import { testDBProducts } from "../../../test/data";
 
 
 const TableProducts: React.FC = () => {
@@ -13,30 +14,29 @@ const TableProducts: React.FC = () => {
     const navigate = useNavigate();
   
     useEffect(() => {
-      const productosEjemplo: DBProduct[] = [
-        { id_producto: 1, id_tienda: 101, referencia: "REF123", nombre: "Producto Alpha", descripcion: "Descripción del producto 1", url_imagen: "https://via.placeholder.com/50" },
-        { id_producto: 2, id_tienda: 102, referencia: "REF456", nombre: "Beta Pro", descripcion: "Descripción del producto 2", url_imagen: "https://via.placeholder.com/50" },
-        { id_producto: 3, id_tienda: 103, referencia: "REF789", nombre: "Gamma Plus", descripcion: "Descripción del producto 3", url_imagen: "https://via.placeholder.com/50" }
-      ];
-      setProductos(productosEjemplo);
-      setProductosFiltrados(productosEjemplo);
+      testDBProducts(20).then(
+        examples =>{
+          setProductos(examples);
+          setProductosFiltrados(examples);
+        }
+      )
     }, []);
   
     // Filtrar productos al escribir en el buscador
     useEffect(() => {
       const filtro = productos.filter((p) =>
-        p.nombre.toLowerCase().includes(busqueda.toLowerCase())
+        p.nombre?.toLowerCase().includes(busqueda.toLowerCase())
       );
       setProductosFiltrados(filtro);
     }, [busqueda, productos]);
   
     const handleDelete = (producto_id: number) => {
-      const nuevaLista = productos.filter((p) => p.producto_id !== producto_id);
+      const nuevaLista = productos.filter((p) => p.id_producto !== producto_id);
       setProductos(nuevaLista);
       setProductosFiltrados(nuevaLista);
     };
   
-    const handleEdit = (producto: ProductoReferencia) => {
+    const handleEdit = (producto: DBProduct) => {
       setProductoEditando(producto);
       setShowModal(true);
     };
@@ -44,7 +44,7 @@ const TableProducts: React.FC = () => {
     const handleSaveEdit = () => {
       if (productoEditando) {
         const productosActualizados = productos.map((p) =>
-          p.producto_id === productoEditando.producto_id ? productoEditando : p
+          p.id_producto === productoEditando.id_producto ? productoEditando : p
         );
         setProductos(productosActualizados);
         setProductosFiltrados(productosActualizados);
@@ -83,19 +83,19 @@ const TableProducts: React.FC = () => {
           <tbody>
             {productosFiltrados.length > 0 ? (
               productosFiltrados.map((producto) => (
-                <tr key={producto.producto_id}>
-                  <td>{producto.producto_id}</td>
+                <tr key={producto.id_producto}>
+                  <td>{producto.id_producto}</td>
                   <td>{producto.referencia}</td>
                   <td>{producto.nombre}</td>
                   <td>{producto.descripcion}</td>
                   <td>
-                    <img src={producto.foto} alt={producto.nombre} width="50" height="50" />
+                    <img src={producto.url_imagen} alt={producto.nombre} width="50" height="50" />
                   </td>
                   <td>
                     <Button variant="warning" size="sm" className="me-2" onClick={() => handleEdit(producto)}>
                       ✏️ Editar
                     </Button>
-                    <Button variant="danger" size="sm" onClick={() => handleDelete(producto.producto_id)}>
+                    <Button variant="danger" size="sm" onClick={() => handleDelete(producto.id_producto)}>
                       ❌ Eliminar
                     </Button>
                   </td>
@@ -145,8 +145,8 @@ const TableProducts: React.FC = () => {
                   <Form.Label>Foto (URL)</Form.Label>
                   <Form.Control
                     type="text"
-                    value={productoEditando.foto}
-                    onChange={(e) => setProductoEditando({ ...productoEditando, foto: e.target.value })}
+                    value={productoEditando.url_imagen}
+                    onChange={(e) => setProductoEditando({ ...productoEditando, url_imagen: e.target.value })}
                   />
                 </Form.Group>
               </Form>
