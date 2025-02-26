@@ -19,7 +19,7 @@ function App() {
         <Route path="/profile/*" element={<RoutesProfile />} />
         <Route path="/compra/*" element={<RoutesCompra />} />
         <Route path="/store/*" element={<RoutesStore />} />
-        <Route path="*" element={<RoutesSearching />} />
+        <Route path="/search/*" element={<RoutesSearching />} />
       </Route>
     </Routes>
   )

@@ -1,4 +1,5 @@
 export interface ProductOff{
+  id_tienda?: string;
   referencia: string;
   nombre?: string;
   foto?:  string;

@@ -1,13 +1,25 @@
 import { Card } from "react-bootstrap";
 import { DBProduct } from "../models/Product";
+import { useRef } from "react";
+import { getOffProduct } from "../utils/ProductsUtils";
 
 interface Props{
   product: DBProduct;
+  hoverCache?: boolean;
 }
 
-const ProductMiniature = ({product}: Props) => {
+const ProductMiniature = ({product, hoverCache = false}: Props) => {
+  const cachedProduct = useRef(false);
+
+  const handleHoverCache = () => {
+    if(hoverCache && !cachedProduct.current){
+      cachedProduct.current = true;
+      getOffProduct(product.referencia);
+    }
+  }
+
   return (
-    <Card style={{ width: '18rem' }}>
+    <Card style={{ width: '18rem' }} onMouseOver={handleHoverCache}>
       <Card.Img variant="top" src={product.url_imagen}
         style={{ width: "auto", height: "10rem", objectFit: "cover"}} />
       <Card.Body>

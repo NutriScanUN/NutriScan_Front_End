@@ -2,21 +2,21 @@ import { Container } from "react-bootstrap";
 import ProductsGrid from "../../components/ProductsGrid";
 import { DBProduct } from "../../models/Product";
 import { useEffect, useState } from "react";
-import { testDBProducts } from "../../test/data";
+import { getNOrLessProducts } from "../../utils/ProductsUtils";
 
 const Home = () => {
   const [products, setProducts] = useState<DBProduct[]>([]);
 
   useEffect(() => {
-    testDBProducts(20).then(
-      examples =>{
-        if(examples) setProducts(examples);
+    getNOrLessProducts(50).then(
+      products =>{
+        if(products) setProducts(products);
       }
     )
   }, []);
   return (
-    <Container>
-      <ProductsGrid products={products} />
+    <Container className="py-5">
+      <ProductsGrid products={products} hoverCache/>
     </Container>
   )
 }
