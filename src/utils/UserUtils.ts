@@ -20,8 +20,9 @@ const ActualizarUsuario = async (
 const ObtenerUsuario = async (userId: string, dispatch: any) => {
   try {
     const user = await getUser(userId);
-    console.log("🚀 ~ ObtenerUsuario ~ user:", user)
-    dispatch(login(user));
+    if(user !== null){
+      dispatch(login(user));
+    }
     return user
   } catch (error) {
     console.error("Error al obtener usuario:", error);
@@ -34,7 +35,8 @@ const CrearUsuario = async (userData: User) => {
     try {
       const newUser = await createUser(userData);
       console.log("🚀 ~ CrearUsuario ~ newUser:", newUser)
-      return true
+      if(newUser) alert("Usuario creado correctamente");
+      return newUser
     } catch (error) {
       console.error("Error al crear usuario:", error);
     }
@@ -59,7 +61,24 @@ const VerificarUsuarioExiste = async (userId: string) => {
   }
 };
 
+const FormatDate = (dateString: string|Date) => {
+  console.log("🚀 ~ FormatDate ~ dateString:", dateString)
+  const date = new Date(dateString);
+  console.log("🚀 ~ FormatDate ~ date:", date)
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const seconds = date.getSeconds();
+  const ampm = hours >= 12 ? 'p. m.' : 'a. m.';
+  const formattedTime = `${hours % 12}:${minutes}:${seconds} ${ampm}`;
+  console.log("🚀 ~ FormatDate ~ ${day}/${month}/${year}, ${formattedTime}:", `${day}/${month}/${year}, ${formattedTime}`)
+  return `${day}/${month}/${year}, ${formattedTime}`;
+};
+
 export {
+  FormatDate,
   ActualizarUsuario,
   ObtenerUsuario,
   CrearUsuario,
