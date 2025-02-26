@@ -36,15 +36,17 @@ const SignIn = () => {
       // Formatear datos para Firestore
       const userData = {
         uid: user?.uid ?? '',
-        name: nombres ?? '',
+        nombres: nombres ?? '',
         email: email ?? '',
         fecha_nacimiento: new Date(fechaNacimiento),
         rol: Roles.ESTANDAR,
       } as User;
 
-      CrearUsuario(userData)
-      // Redirigir a la página de login
-      navigate("/login");
+      if(await CrearUsuario(userData)){
+        navigate("/login");
+      }else{
+        alert("Error al crear usuario");
+      }
     } catch (error: any) {
       console.error("Error en el registro:", error.message);
       alert(`Error: ${error.message}`);

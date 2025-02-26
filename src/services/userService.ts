@@ -1,30 +1,57 @@
-import { DATOUSERTEST, User } from "../models/user";
-
-// const API_BASE_URL = process.env.BASE_URL_USER_MS;
+import { Roles, User } from "../models/user";
 
 export const createUser = async (userData: User) => {
-    // console.log("🚀 ~ API_BASE_URL:", API_BASE_URL)
     try {
-        // const response = await axios.post(API_BASE_URL, userData);
-        // return response.data;
-        return userData as User
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        const raw = JSON.stringify({
+            "query": "mutation Mutation($input: CreateUserInput!) {\r\n  createUser(input: $input) {\r\n    success\r\n  }\r\n}",
+            "operationName": "Mutation",        
+            "variables": {
+                "input": {
+                    "uid": `${userData.uid}`,
+                    "nombres": `${userData.nombres}`,
+                    "email": `${userData.email}`,
+                    "fecha_nacimiento": `${userData.fecha_nacimiento}`,
+                    "fecha_registro": `${userData?.fecha_registro ?? new Date()}`,
+                    "rol": `${userData?.rol ?? Roles.ESTANDAR}`,
+                    "url_imagen": `${userData?.photoURL ?? ''}`
+                }
+            },
+        });
+        console.log("🚀 ~ createUser ~ raw:", raw)
+
+        const requestOptions: RequestInit  = {
+            method: "POST",
+            headers: myHeaders,
+            body: raw,
+            redirect: "follow"
+        };
+
+        const response = await fetch("http://34.2.5.32:3003/", requestOptions)
+        const result = await response.json()  // 👈 Parseamos JSON en lugar de .text(
+        if(result.data.createUser.success){
+            console.log("result",result.data.createUser.success);
+            return true
+        }
+        return false
     } catch (error) {
         console.error("Error al crear usuario:", error);
         throw error;
     }
 };
 
-export const getUser = async (uid: string) => {
+export const getUser = async (uid: string): Promise<User|null> => {
     console.log("🚀 ~ getUser ~ uid:", uid)
-    return DATOUSERTEST
     try {
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
         const raw = JSON.stringify({
-            "query": "query Query($userQueryId: ID!) {\n  userQuery(id: $userQueryId) {\n    data {\n      url_imagen\n      uid\n      nombres\n      fecha_registro\n      fecha_nacimiento\n      email\n    }\n  }\n}\n",
+            "query": "query Query($userQueryId: ID!) {\n  userQuery(id: $userQueryId) {\n    data {\n      url_imagen\n      uid\n      nombres\n      fecha_nacimiento\n      email\n    }\n  }\n}\n",
             "variables": {
-                "userQueryId": "123456"
+                "userQueryId": `${uid}`
             },
             "operationName": "Query"
         });
@@ -36,22 +63,20 @@ export const getUser = async (uid: string) => {
             redirect: "follow"
         };
 
-        fetch("http://localhost:3003/graphql", requestOptions)
-        .then((response) => response.json())  // 👈 Parseamos JSON en lugar de .text()
-        .then((result) => {
-            // Transformar fecha si viene en formato timestamp
-            if (result.data?.userQuery?.data?.fecha_nacimiento?._seconds) {
-                result.data.userQuery.data.fecha_nacimiento = new Date(
-                    result.data.userQuery.data.fecha_nacimiento._seconds * 1000
-                ).toISOString();
-            }
-            console.log("result",result);
-        })
-        .catch((error) => console.error(error));
-        return DATOUSERTEST
+        const response = await fetch("http://34.2.5.32:3003/", requestOptions);
+        const result = await response.json();
+
+        if (result?.data?.userQuery?.data?.fecha_nacimiento?._seconds) {
+            result.data.userQuery.data.fecha_nacimiento = new Date(
+                result.data.userQuery.data.fecha_nacimiento._seconds * 1000
+            ).toISOString();
+        }
+
+        console.log("result", result);
+        return result.data.userQuery.data as User;
     } catch (error) {
         console.error("Error al obtener usuario:", error);
-        throw error;
+        return null;
     }
 };
 

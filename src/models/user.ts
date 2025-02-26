@@ -6,9 +6,10 @@ export enum Roles {
 
 export interface UserQuery {
     uid: string;
-    name: string;
+    nombres: string;
     email: string;
     fecha_nacimiento: { seconds: number; nanoseconds: number };
+    fecha_registro?: { seconds: number; nanoseconds: number };
     rol: Roles;
     photoURL?: string;
     ajustes?: object;
@@ -16,9 +17,10 @@ export interface UserQuery {
 
 export interface User {
     uid: string;
-    name: string;
+    nombres: string;
     email: string;
     fecha_nacimiento: Date|string;
+    fecha_registro?: Date|string;
     rol: Roles;
     photoURL?: string;
     ajustes?: object;
@@ -26,7 +28,7 @@ export interface User {
   
 export const DATOUSERTEST =  {
   uid: '123456789',
-  name: 'nombre',
+  nombres: 'nombre',
   email: 'email@test.com',
   rol: Roles.ESTANDAR,
   fecha_nacimiento: new Date()
