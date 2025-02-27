@@ -13,7 +13,7 @@ interface ProductListQueryRes{
 }
 
 let OffCache: Cache | null = null;
-caches.open("off-products").then(cache => OffCache = cache);
+window.caches.open("off-products").then(cache => OffCache = cache);
 
 const STORE_API = import.meta.env.VITE_TEST_STORE_URI;
 const API_URI = import.meta.env.VITE_API_GATEWAY_URI;
