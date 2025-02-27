@@ -1,6 +1,13 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Button, ListGroup, Modal } from "react-bootstrap";
 
-const Scanner = () => {
+interface Props{
+  show: boolean;
+  onHide: () => void;
+  onReference: (reference: string) => void;
+}
+
+const Scanner = ({show, onHide, onReference}: Props) => {
 
   const [capturando, setCapturando] = useState(false);
   const [codigo, setCodigo] = useState("");
@@ -11,6 +18,12 @@ const Scanner = () => {
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
 
   const oldTime = useRef(0);
+
+  const handleHide = () => {
+    setCapturando(false);
+    setCodigo("");
+    onHide();
+  }
 
   const InitWorker = () => {
     console.log("init worker");
@@ -62,10 +75,70 @@ const Scanner = () => {
     requestAnimationFrame(tick);
   }
 
+
+  useEffect(() => {
+
+    console.log("videoRef:", videoRef.current, "canvasRef:", canvasRef.current);
+
+    if(capturando){
+
+      InitWorker();
+
+      if(canvasRef.current){
+        ctxRef.current = canvasRef.current.getContext("2d",{
+          willReadFrequently: true
+        });
+      }
+
+      navigator.mediaDevices?.getUserMedia({
+        audio: false,
+        video: {
+          facingMode:"environment",
+          aspectRatio: 1
+        }
+      })
+      .then(mediaStream => {
+        videoRef.current.srcObject = mediaStream;
+        videoRef.current.onloadedmetadata = () => {
+          videoRef.current.play();
+
+          requestAnimationFrame(tick);
+        }
+      })
+      .catch(err => console.error(err.name, err));
+    }else{
+      videoRef.current.pause();
+      if(videoRef.current.srcObject){
+        videoRef.current.srcObject = null;
+      }
+    }
+  }, [capturando]);
+
+  useEffect(() => { if(show) setCapturando(true) }, [show])
+
   return (
-    <div>
-      <h1>Scanner</h1>
-    </div>
+    <Modal backdrop="static" show={show} onHide={handleHide}>
+      <Modal.Header closeButton className="text-bg-dark" closeVariant="white">
+        <Modal.Title>Scanner</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+      {
+      capturando ?
+        <canvas id="captura" className="maintainRatio" ref={canvasRef}/>:
+      codigo?
+      <>
+        <Modal.Title className="px-3 pb-3">Codigo del producto</Modal.Title>
+        <ListGroup>
+          <ListGroup.Item className="text-center text-bg-dark">{codigo}</ListGroup.Item>
+        </ListGroup>
+      </>:<></>
+      }
+      </Modal.Body>
+      <Modal.Footer>
+        <Button onClick={handleHide} variant="secondary">Cerrar</Button>
+        <Button onClick={() => onReference(codigo.split(" ")[0])} variant="primary">Confirmar</Button>
+      </Modal.Footer>
+    </Modal>
   );
 }
 

@@ -20,11 +20,20 @@ const ProductInfo = ({show, productOff, handleClose}: Props) => {
 
     return Object.entries<number | string>(infoProductoLower).map(([key, value]) =>
       {
+        if(key === "cantidad")
+          return (
+            <tr key={key}>
+              <td>{key}</td>
+              <td>{parseFloat(value as string).toFixed(2).replace(/\.?0*$/, "")}</td>
+              <td>{infoProductoLower[`unidad${key}`]}</td>
+            </tr>
+          )
+        else
         if(!key.startsWith("unidad") && key !== "imagenfrontalurl" && key !== "nivelesaltos" && value)
           return (
             <tr key={key}>
               <td>{key}</td>
-              <td>{value}</td>
+              <td>{(value as number).toFixed(2).replace(/\.?0*$/, "")}</td>
               <td>{infoProductoLower[`unidad${key}`]}</td>
             </tr>
           )
@@ -32,10 +41,15 @@ const ProductInfo = ({show, productOff, handleClose}: Props) => {
     )
   }
 
+  const contructNutriscoreImgPath = (nutriscore?: string) => {
+    if(nutriscore && nutriscore !== "unknown") return `/NutriscoreLogos/Nutri-score-${nutriscore.toUpperCase()}.svg`;
+    else return "/NutriscoreLogos/nutriscore-unknown.svg";
+  }
+
   return (
     
     <Modal show={show} onHide={handleClose} animation={false} size="lg">
-        <Modal.Header closeButton>
+        <Modal.Header closeButton className="text-bg-dark" closeVariant="white">
           <Modal.Title>{productOff.producto.nombre}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -43,9 +57,9 @@ const ProductInfo = ({show, productOff, handleClose}: Props) => {
           <Col>
             <Card>
               <Card.Body>
-                <Card.Title>Nutriscore: {productOff.producto.nutriscore?.toUpperCase()}</Card.Title>
+                <Card.Title><img src={contructNutriscoreImgPath(productOff.producto.nutriscore)}></img></Card.Title>
               </Card.Body>
-              <Card.Img variant="bottom" src={productOff.producto.foto} />
+              <Card.Img variant="bottom" src={productOff.producto.foto} className="bg-dark-subtle" style={{height: "57vh", objectFit: "contain"}}/>
             </Card>
           </Col>
           <Col>

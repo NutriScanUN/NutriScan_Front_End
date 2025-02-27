@@ -4,16 +4,22 @@ import { DBProduct } from "../../../models/Product";
 import ProductsGrid from "../../../components/ProductsGrid";
 import { useEffect, useRef, useState } from "react";
 import { getDBPRoductAfterOffCache, getDBProductsAfterOffCache, getProductNameSearch } from "../../../utils/ProductsUtils";
+import Scanner from "../components/Scanner";
 
 const Search = () => {
   const navigate = useNavigate();
 
   const [searchParams] = useSearchParams();
+
   const [products, setProducts] = useState<DBProduct[]>([]);
   const [showSpinner, setShowSpinner] = useState(false);
 
+  const [showScanner, setShowSCanner] = useState(false);
+
   const searchID = useRef<number>(0);
   const prevBulkSearch = useRef<string>("");
+
+
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     const formdata = new FormData(e.currentTarget);
@@ -23,6 +29,16 @@ const Search = () => {
     if(formdata.get("input")) navigate(`/search?${search}`);
     else navigate("/search");
   }
+
+  const handleScannerReference = ( reference?: string ) => {
+    setShowSCanner(false);
+    if(reference){
+      navigate(`/search?input=${reference}`);
+    }else{
+      alert("No se encontro referencia en el scaneo");
+    }
+  }
+
 
   useEffect(() => {
     let search = searchParams.get("input");
@@ -94,19 +110,14 @@ const Search = () => {
               aria-label="Busqueda de productos"
               aria-describedby="busqueda"
             />
-            <Button variant="primary" type="submit">
-              Buscar 🔎
-            </Button>
+            <Button variant="primary" type="submit">Buscar 🔎</Button>
           </InputGroup>
         </Form>
-        <Form className="ps-3">
-          <InputGroup>
-            <Button variant="primary" type="submit" className="px-4">
-              scanear 📷
-            </Button>
-          </InputGroup>
-        </Form>
+        <Stack className="ps-3" style={{flexGrow: 0}}>
+            <Button onClick={() => setShowSCanner(true)} variant="primary" className="px-4">Scanear 📷</Button>
+        </Stack>
       </Stack>
+      <Scanner show={showScanner} onHide={() => setShowSCanner(false)} onReference={handleScannerReference} />
       <Stack className="p-3" style={{flexGrow: 1}}>
         <Container fluid className="border rounded p-3" style={{flexGrow: 1, position: "relative"}}>
           <ProductsGrid products={products} />
