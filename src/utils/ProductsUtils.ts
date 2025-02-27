@@ -61,8 +61,6 @@ export async function getProduct(reference: string){
 
     if(resp.ok){
       return (await resp.json() as ProductQueryRes).data.getProduct;
-    }else{
-      throw Error(`${resp.status}: ${resp.statusText}`);
     }
   }catch(error: any){
     console.error(error)
@@ -86,8 +84,6 @@ export async function getAllProducts(){
 
     if(resp.ok){
       return (await resp.json() as ProductListQueryRes).data.getProducts;
-    }else{
-      throw Error(`${resp.status}: ${resp.statusText}`);
     }
   }catch(error: any){
     console.error(error)
@@ -132,8 +128,6 @@ export async function getOffProduct(reference: string){
       OffCache.put(url, resp.clone());
       setTimeout(() => OffCache.delete(url), 1000 * 60 * 5);
       return (await resp.json() as productOffRes);
-    }else{
-      throw Error(`${resp.status}: ${resp.statusText}`);
     }
   }catch(error: any){
     console.error(error)
