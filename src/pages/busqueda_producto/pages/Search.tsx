@@ -22,12 +22,19 @@ const Search = () => {
 
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+
     const formdata = new FormData(e.currentTarget);
     // @ts-expect-error
     const search = new URLSearchParams(formdata).toString();
 
-    if(formdata.get("input")) navigate(`/search?${search}`);
-    else navigate("/search");
+    const currentSearchID = (searchID.current + 1)%256;
+    searchID.current = currentSearchID;
+    setTimeout(() => {
+      if(currentSearchID !== searchID.current) return;
+
+      if(formdata.get("input")) navigate(`/search?${search}`);
+      else navigate("/search");
+    }, 500);
   }
 
   const handleScannerReference = ( reference?: string ) => {
@@ -46,9 +53,6 @@ const Search = () => {
     if(search){
       setShowSpinner(true);
       search = search.trim();
-
-      const currentSearchID = (searchID.current + 1)%256;
-      searchID.current = currentSearchID;
       
       // Check if the search is a reference or a comma separated list of references (ignoring spaces)
       if(/^\d+(\s*,{1}\s*\d+)*$/.test(search)){
@@ -63,19 +67,15 @@ const Search = () => {
         if(searchList.length > 1) {
           getDBProductsAfterOffCache(searchList).then(
             products => {
-              if(currentSearchID === searchID.current){
-                setProducts(products);
-                setShowSpinner(false);
-              }
+              setProducts(products);
+              setShowSpinner(false);
             }
           );
         }else{
           getDBPRoductAfterOffCache(search).then(
             product => {
-              if(currentSearchID === searchID.current){
-                if(product) setProducts([product]);
-                setShowSpinner(false);
-              }
+              if(product) setProducts([product]);
+              setShowSpinner(false);
             }
           );
         };
@@ -84,10 +84,8 @@ const Search = () => {
       else{
         getProductNameSearch(search).then(
           products => {
-            if(currentSearchID === searchID.current){
-              if(products) setProducts(products);
-              setShowSpinner(false);
-            }
+            if(products) setProducts(products);
+            setShowSpinner(false);
           }
         )
       }
