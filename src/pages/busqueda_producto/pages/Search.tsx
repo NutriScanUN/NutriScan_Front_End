@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router";
 import { DBProduct } from "../../../models/Product";
 import ProductsGrid from "../../../components/ProductsGrid";
 import { useEffect, useRef, useState } from "react";
-import { getDBPRoductAfterOffCache, getDBProductsAfterOffCache, getProductNameSearch } from "../../../utils/ProductsUtils";
+import { getDBPRoductAfterOffCache, getProductNameSearch, getProducts } from "../../../utils/ProductsUtils";
 import Scanner from "../components/Scanner";
 
 const Search = () => {
@@ -65,7 +65,7 @@ const Search = () => {
         const searchList = search.split(",");
 
         if(searchList.length > 1) {
-          getDBProductsAfterOffCache(searchList).then(
+          getProducts(searchList).then(
             products => {
               setProducts(products);
               setShowSpinner(false);

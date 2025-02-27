@@ -67,6 +67,20 @@ export async function getProduct(reference: string){
   }
 }
 
+export async function getProducts(references: string[]){
+  const products: DBProduct[] = [];
+
+  for(let reference of references){
+    const product = await getProduct(reference);
+
+    if(product){
+      products.push(product);
+    }
+  }
+
+  return products;
+}
+
 export async function getAllProducts(){
   const productQuery: GraphQLQuery = {
     query: DBPRoductListQuery,
