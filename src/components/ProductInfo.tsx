@@ -1,4 +1,4 @@
-import { Card, Col, Modal, Row, Table } from "react-bootstrap";
+import { Button, Card, Col, ListGroup, Modal, Row, Table } from "react-bootstrap";
 import { productOffRes } from "../models/Product";
 
 interface Props{
@@ -8,6 +8,9 @@ interface Props{
 }
 
 const ProductInfo = ({show, productOff, handleClose}: Props) => {
+
+  const handleAddConsume = () => {
+  }
 
   const lowerize = (obj: any) =>
     Object.keys(obj).reduce<any>((acc, k) => {
@@ -48,7 +51,7 @@ const ProductInfo = ({show, productOff, handleClose}: Props) => {
 
   return (
     
-    <Modal show={show} onHide={handleClose} animation={false} size="lg">
+    <Modal show={show} onHide={handleClose} animation={false} size="xl">
         <Modal.Header closeButton className="text-bg-dark" closeVariant="white">
           <Modal.Title>{productOff.producto.nombre}</Modal.Title>
         </Modal.Header>
@@ -57,39 +60,50 @@ const ProductInfo = ({show, productOff, handleClose}: Props) => {
           <Col>
             <Card>
               <Card.Body>
-                <Card.Title><img src={contructNutriscoreImgPath(productOff.producto.nutriscore)}></img></Card.Title>
+                <Card.Title className="d-flex justify-content-center">
+                  <img src={contructNutriscoreImgPath(productOff.producto.nutriscore)}></img>
+                </Card.Title>
               </Card.Body>
               <Card.Img variant="bottom" src={productOff.producto.foto} className="bg-dark-subtle" style={{height: "57vh", objectFit: "contain"}}/>
             </Card>
           </Col>
           <Col>
             <Card>
-              <Card.Body>
-                <Table striped bordered hover>
-                  <thead>
-                    <tr>
-                      <th>Nutrimentos</th>
-                      <th>Cantidad</th>
-                      <th>Unidad</th>
-                    </tr>
-                    {constructRows()}
-                  </thead>
-                </Table>
-              </Card.Body>
-              <Card.Body>
-                <Card.Title>Categorias</Card.Title>
-                <Card.Text>
-                  {productOff.producto.categorias?.join(", ")}
-                </Card.Text>
-              </Card.Body>
-              {productOff.infoProducto.nivelesAltos && productOff.infoProducto.nivelesAltos.length > 0 &&
-              <Card.Body>
-                <Card.Title>Niveles Altos</Card.Title>
-                <Card.Text>
-                  {productOff.infoProducto.nivelesAltos?.join(", ")}
-                </Card.Text>
-              </Card.Body>
-              }
+              <ListGroup variant="flush">
+                <ListGroup.Item>
+                  <Button style={{width: "100%"}} variant="primary" onClick={handleAddConsume}>Agregar a consumo</Button>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <Table striped bordered hover responsive>
+                    <thead>
+                      <tr>
+                        <th>Nutrimentos</th>
+                        <th>Cantidad</th>
+                        <th>Unidad</th>
+                      </tr>
+                      {constructRows()}
+                    </thead>
+                  </Table>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <Card.Body>
+                    <Card.Title>Categorias</Card.Title>
+                    <Card.Text>
+                      {productOff.producto.categorias?.join(", ")}
+                    </Card.Text>
+                  </Card.Body>
+                </ListGroup.Item>
+                {productOff.infoProducto.nivelesAltos && productOff.infoProducto.nivelesAltos.length > 0 &&
+                <ListGroup.Item>
+                  <Card.Body>
+                    <Card.Title>Niveles Altos</Card.Title>
+                    <Card.Text>
+                      {productOff.infoProducto.nivelesAltos?.join(", ")}
+                    </Card.Text>
+                  </Card.Body>
+                </ListGroup.Item>
+                }
+              </ListGroup>
             </Card>
           </Col>
         </Row>
