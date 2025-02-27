@@ -12,7 +12,8 @@ interface ProductListQueryRes{
   }
 }
 
-const OffCache = await caches.open("off-products");
+let OffCache: Cache | null = null;
+caches.open("off-products").then(cache => OffCache = cache);
 
 const STORE_API = import.meta.env.VITE_TEST_STORE_URI;
 const API_URI = import.meta.env.VITE_API_GATEWAY_URI;
@@ -130,17 +131,20 @@ export async function getOffProduct(reference: string){
 
   try{
     const url = `${STORE_API}/off/${reference}`;
-    const cache = await OffCache.match(url);
 
-    if(cache){
-      return (await cache.json() as productOffRes);
+    if(OffCache){
+      const cache = await OffCache.match(url);
+  
+      if(cache){
+        return (await cache.json() as productOffRes);
+      }
     }
 
     const resp = await fetch(url);
 
     if(resp.ok){
-      OffCache.put(url, resp.clone());
-      setTimeout(() => OffCache.delete(url), 1000 * 60 * 5);
+      OffCache?.put(url, resp.clone());
+      setTimeout(() => OffCache?.delete(url), 1000 * 60 * 5);
       return (await resp.json() as productOffRes);
     }
   }catch(error: any){

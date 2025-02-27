@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Table, Button, Modal, Form } from "react-bootstrap";
 import { DBProduct } from "../../../models/Product";
 import { useNavigate } from "react-router";
-import { testDBProducts } from "../../../test/data";
+import { getNOrLessProducts } from "../../../utils/ProductsUtils";
 
 
 const TableProducts: React.FC = () => {
@@ -14,10 +14,12 @@ const TableProducts: React.FC = () => {
     const navigate = useNavigate();
   
     useEffect(() => {
-      testDBProducts(20).then(
-        examples =>{
-          setProductos(examples);
-          setProductosFiltrados(examples);
+      getNOrLessProducts(10).then(
+        products =>{
+          if(products) {
+            setProductos(products);
+            setProductosFiltrados(products);
+          }
         }
       )
     }, []);
