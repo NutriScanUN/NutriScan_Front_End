@@ -11,8 +11,10 @@ FROM nginx:stable-alpine AS production
 COPY --from=build /app/dist /usr/share/nginx/html
 
 RUN mkdir /etc/nginx/ssl
+RUN mkdir /etc/nginx/ssl/api
 
 COPY nginx/ssl-cert /etc/nginx/ssl
+COPY nginx/ssl-cert/api /etc/nginx/ssl/api
 
 COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 

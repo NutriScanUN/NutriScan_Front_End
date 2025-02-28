@@ -5,5 +5,4 @@ dist
 .dockerignore
 .git
 .gitignore
-.env
 test
