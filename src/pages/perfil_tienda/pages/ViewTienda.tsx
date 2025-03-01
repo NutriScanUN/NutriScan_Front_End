@@ -2,12 +2,13 @@ import { Card, Table } from "react-bootstrap";
 import { ViewOfTienda } from "../../../models/Tienda";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { ProductoReferencia } from "../../../models/Product";
+import { DBProduct } from "../../../models/Product";
+import { getNOrLessProducts } from "../../../utils/ProductsUtils";
 
 const ViewTienda: React.FC = () => {
     const { idTienda } = useParams<{ idTienda: string }>();
     const [tienda, setTienda] = useState<ViewOfTienda | null>(null);
-    const [productos, setProductos] = useState<ProductoReferencia[]>([]);
+    const [productos, setProductos] = useState<DBProduct[]>([]);
   
     useEffect(() => {
       // Simulación de consulta de la tienda
@@ -20,14 +21,13 @@ const ViewTienda: React.FC = () => {
       setTienda(tiendaEncontrada || null);
   
       // Simulación de consulta de productos de la tienda
-      const productosEjemplo: ProductoReferencia[] = [
-        { producto_id: 1, tienda_id: 101, longitud: "20cm", referencia: "REF123", nombre: "Producto A1", descripcion: "Desc 1", foto: "https://via.placeholder.com/50" },
-        { producto_id: 2, tienda_id: 101, longitud: "30cm", referencia: "REF456", nombre: "Producto A2", descripcion: "Desc 2", foto: "https://via.placeholder.com/50" },
-        { producto_id: 3, tienda_id: 102, longitud: "15cm", referencia: "REF789", nombre: "Producto B1", descripcion: "Desc 3", foto: "https://via.placeholder.com/50" },
-      ];
-  
-      const productosFiltrados = productosEjemplo.filter(p => p.tienda_id === Number(idTienda));
-      setProductos(productosFiltrados);
+      getNOrLessProducts(10).then(
+        products =>{
+          if(products) {
+            setProductos(products);
+          }
+        }
+      )
     }, [idTienda]);
   
     return (
@@ -58,13 +58,12 @@ const ViewTienda: React.FC = () => {
               <tbody>
                 {productos.length > 0 ? (
                   productos.map((producto) => (
-                    <tr key={producto.producto_id}>
-                      <td>{producto.producto_id}</td>
+                    <tr key={producto.id_producto}>
                       <td>{producto.referencia}</td>
                       <td>{producto.nombre}</td>
                       <td>{producto.descripcion}</td>
                       <td>
-                        <img src={producto.foto} alt={producto.nombre} width="50" height="50" />
+                        <img src={producto.url_imagen} alt={producto.nombre} width="50" height="50" />
                       </td>
                     </tr>
                   ))

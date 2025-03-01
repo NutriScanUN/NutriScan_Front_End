@@ -12,6 +12,9 @@ interface ProductListQueryRes{
   }
 }
 
+let OffCache: Cache | null = null;
+window.caches.open("off-products").then(cache => OffCache = cache);
+
 const STORE_API = import.meta.env.VITE_TEST_STORE_URI;
 const API_URI = import.meta.env.VITE_API_GATEWAY_URI;
 
@@ -59,12 +62,24 @@ export async function getProduct(reference: string){
 
     if(resp.ok){
       return (await resp.json() as ProductQueryRes).data.getProduct;
-    }else{
-      throw Error(`${resp.status}: ${resp.statusText}`);
     }
   }catch(error: any){
     console.error(error)
   }
+}
+
+export async function getProducts(references: string[]){
+  const products: DBProduct[] = [];
+
+  for(let reference of references){
+    const product = await getProduct(reference);
+
+    if(product){
+      products.push(product);
+    }
+  }
+
+  return products;
 }
 
 export async function getAllProducts(){
@@ -84,11 +99,19 @@ export async function getAllProducts(){
 
     if(resp.ok){
       return (await resp.json() as ProductListQueryRes).data.getProducts;
-    }else{
-      throw Error(`${resp.status}: ${resp.statusText}`);
     }
   }catch(error: any){
     console.error(error)
+  }
+}
+
+export async function getNOrLessProducts(num: number){
+  const products = await getAllProducts();
+
+  if(products){
+    products.sort(() => (Math.random() - 0.5));
+  
+    return products.slice(0,num);
   }
 }
 
@@ -107,14 +130,71 @@ export async function getOffProduct(reference: string){
   // }
 
   try{
-    const resp = await fetch(`${STORE_API}/off/${reference}`);
+    const url = `${STORE_API}/off/${reference}`;
+
+    if(OffCache){
+      const cache = await OffCache.match(url);
+  
+      if(cache){
+        return (await cache.json() as productOffRes);
+      }
+    }
+
+    const resp = await fetch(url);
 
     if(resp.ok){
+      OffCache?.put(url, resp.clone());
+      setTimeout(() => OffCache?.delete(url), 1000 * 60 * 5);
       return (await resp.json() as productOffRes);
+    }
+  }catch(error: any){
+    console.error(error)
+  }
+}
+
+export async function getProductNameSearch(name: string){
+  // const productQuery: GraphQLQuery = {
+  //   query: NameSearchQuery,
+  //   operationName: "GetProducts",
+  //   variables: { name }
+  // };
+
+  // const productRequest: RequestInit = {
+  //   ...REQUEST,
+  //   body: JSON.stringify(productQuery)
+  // }
+
+  try{
+    const resp = await fetch(`${STORE_API}/product/name/${name}`);
+
+    if(resp.ok){
+      return (await resp.json() as DBProduct[]);
     }else{
       throw Error(`${resp.status}: ${resp.statusText}`);
     }
   }catch(error: any){
     console.error(error)
   }
+}
+
+export async function getDBPRoductAfterOffCache(reference: string){
+  const offProduct = await getOffProduct(reference);
+
+  if(offProduct){
+    return getProduct(reference);
+  }
+}
+
+export async function getDBProductsAfterOffCache(references: string[]){
+  let products: DBProduct[] = [];
+
+  for(let reference of references){
+    const product = await getDBPRoductAfterOffCache(reference);
+
+    if(product){
+      products.push(product);
+    }
+  }
+
+  return products;
 }

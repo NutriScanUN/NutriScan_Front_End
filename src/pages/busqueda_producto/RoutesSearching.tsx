@@ -1,12 +1,9 @@
-import { Routes, Route, Navigate } from 'react-router'
-import Home from '../home/Home'
+import { Routes, Route } from 'react-router'
+import Search from './pages/Search'
 export const RoutesSearching = () => {
   return (
     <Routes >
-      <Route>
-        <Route path="/" element={<Home/>}></Route>
-        <Route path="*" element={<Navigate to={'/'}/>}></Route>
-      </Route>
+      <Route index element={<Search/>} />
     </Routes>
   )
 }

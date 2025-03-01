@@ -27,7 +27,7 @@ const storeSlice = createSlice({
   name: "tienda",
   initialState,
   reducers: {
-    setTienda: (state, action: PayloadAction<TiendaState>) => {
+    setTienda: (_state, action: PayloadAction<TiendaState>) => {
       return { ...action.payload, tiendaGuardada: true }; // Guardar tienda y actualizar flag
     },
     updateTienda: (state, action: PayloadAction<Partial<TiendaState>>) => {

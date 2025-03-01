@@ -10,7 +10,7 @@ const NavigationLayout = () => {
   const authenticado = useSelector((state: RootState) => state.auth.isAuthenticated)
   const rol = useSelector((state: RootState) => state.auth?.user?.rol ?? Roles.ESTANDAR)
   return (
-    <Stack>
+    <Stack style={{minHeight: "100vh"}}>
       <Banner registered={authenticado} rol={rol}/>
       <Outlet/>
       <Footer/>
