@@ -1,7 +1,7 @@
 export interface ConsumptionHistoryQuery {
     id?: string;
     id_producto: string;
-    fecha_consumo: { seconds: number; nanoseconds: number };
+    fecha_consumo: string;
     cantidad_consumida: number;
     nutrientes_ingeridos: Record<string, number>;
     activo: boolean;
@@ -10,7 +10,7 @@ export interface ConsumptionHistoryQuery {
 export interface ConsumptionHistory {
     id?: string;
     id_producto: string;
-    fecha_consumo: Date;
+    fecha_consumo: Date|string;
     cantidad_consumida: number;
     nutrientes_ingeridos: Record<string, number>;
     activo: boolean;

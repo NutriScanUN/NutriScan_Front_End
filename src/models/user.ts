@@ -11,7 +11,7 @@ export interface UserQuery {
     fecha_nacimiento: { seconds: number; nanoseconds: number };
     fecha_registro?: { seconds: number; nanoseconds: number };
     rol: Roles;
-    photoURL?: string;
+    url_imagen?: string;
     ajustes?: object;
   }
 
@@ -22,7 +22,7 @@ export interface User {
     fecha_nacimiento: Date|string;
     fecha_registro?: Date|string;
     rol: Roles;
-    photoURL?: string;
+    url_imagen?: string;
     ajustes?: object;
   }
   

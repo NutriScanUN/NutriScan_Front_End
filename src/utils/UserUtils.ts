@@ -4,14 +4,19 @@ import { login, logout, updateUser, } from "../stateManagement/authSlice";
 
 const ActualizarUsuario = async (
   userId: string,
-  updates: Partial<User>,
+  updates: User|null,
   dispatch: any
 ) => {
   console.log("🚀 ~ ActualizarUsuario ~ userId:", userId);
+  if(updates === null) return false;
   try {
     const updatedUser = await updateUserById(userId, updates);
-    console.log("🚀 ~ updatedUser:", updatedUser)
-    dispatch(updateUser(updates));
+    if(updatedUser){
+      dispatch(updateUser(updates));
+      alert("Usuario actualizado correctamente");
+    }else{
+      alert("Error al actualizar usuario");
+    }
   } catch (error) {
     console.error("Error al actualizar usuario:", error);
   }

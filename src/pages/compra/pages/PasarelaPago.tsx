@@ -6,13 +6,14 @@ import { ActualizarUsuario } from "../../../utils/UserUtils";
 import { RootState } from "../../../stateManagement/store";
 
 const PasarelaPago = () => {
-  const uid = useSelector((state:RootState) => state.auth.user?.uid ?? '')
+  const user = useSelector((state: RootState) => state.auth.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handlePurchase = () => {
-    const usuario: Partial<User> = { rol: Roles.PAGADO }; // Actualiza el rol del usuario
-    ActualizarUsuario(uid,usuario,dispatch)
+    const usuario: User = {...user} as User
+    usuario.rol = Roles.PAGADO; // Actualiza el rol del usuario
+    ActualizarUsuario(usuario.uid,usuario,dispatch)
     navigate("/compra/receive");
   };
 

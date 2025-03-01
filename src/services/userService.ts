@@ -16,7 +16,7 @@ export const createUser = async (userData: User) => {
                     "fecha_nacimiento": `${userData.fecha_nacimiento}`,
                     "fecha_registro": `${userData?.fecha_registro ?? new Date()}`,
                     "rol": `${userData?.rol ?? Roles.ESTANDAR}`,
-                    "url_imagen": `${userData?.photoURL ?? ''}`
+                    "url_imagen": `${userData?.url_imagen ?? ''}`
                 }
             },
         });
@@ -49,7 +49,7 @@ export const getUser = async (uid: string): Promise<User|null> => {
         myHeaders.append("Content-Type", "application/json");
 
         const raw = JSON.stringify({
-            "query": "query Query($userQueryId: ID!) {\n  userQuery(id: $userQueryId) {\n    data {\n      url_imagen\n      uid\n      nombres\n      fecha_nacimiento\n      email\n    }\n  }\n}\n",
+            "query": "query Query($userQueryId: ID!) {\n  userQuery(id: $userQueryId) {\n    data {\n      url_imagen\n      uid\n      nombres\n      fecha_nacimiento\n      fecha_registro\n      rol\n      email\n    }\n  }\n}\n",
             "variables": {
                 "userQueryId": `${uid}`
             },
@@ -69,6 +69,11 @@ export const getUser = async (uid: string): Promise<User|null> => {
         if (result?.data?.userQuery?.data?.fecha_nacimiento?._seconds) {
             result.data.userQuery.data.fecha_nacimiento = new Date(
                 result.data.userQuery.data.fecha_nacimiento._seconds * 1000
+            ).toISOString();
+        }
+        if (result?.data?.userQuery?.data?.fecha_registro?._seconds) {
+            result.data.userQuery.data.fecha_registro = new Date(
+                result.data.userQuery.data.fecha_registro._seconds * 1000
             ).toISOString();
         }
 
@@ -93,13 +98,41 @@ export const checkUserExists = async (uid: string) => {
     }
 };
 
-export const updateUserById = async (uid: string, updates: object) => {
+export const updateUserById = async (uid: string, updates: User) => {
+    console.log("🚀 ~ updateUserById ~ updates:", updates)
     try {
-        // const response = await axios.put(`${API_BASE_URL}/${uid}`, updates);
-        // return response.data;
-        console.log("🚀 ~ updateUser ~ uid:", uid)
-        console.log("🚀 ~ updateUser ~ updates:", updates)
-        return true
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        const raw = JSON.stringify({
+            "query": "mutation UpdateUser($input: CreateUserInput!) {\r\n  updateUser(input: $input) {\r\n    success\r\n    message\r\n    code\r\n  }\r\n}",
+            "variables": {
+                "input": {
+                    "uid": uid,
+                    "nombres": updates.nombres,
+                    "email": updates.email,
+                    "url_imagen": updates.url_imagen, 
+                    "fecha_registro": updates.fecha_registro,
+                    "fecha_nacimiento": updates.fecha_nacimiento,
+                    "rol": updates.rol
+                }
+            },
+            "operationName": "UpdateUser"
+        });
+
+        const requestOptions: RequestInit  = {
+            method: "POST",
+            headers: myHeaders,
+            body: raw,
+            redirect: "follow"
+        };
+
+        const response = await fetch("http://34.2.5.32:3003/", requestOptions);
+        console.log("🚀 ~ updateUserById ~ requestOptions:", requestOptions)
+        const result = await response.json();
+        console.log("🚀 ~ updateUserById ~ result:", result)
+        
+        return result?.data?.updateUser?.success ?? false;
     } catch (error) {
         console.error("Error al actualizar usuario:", error);
         throw error;

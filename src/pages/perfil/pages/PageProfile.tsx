@@ -1,17 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Form, FloatingLabel } from "react-bootstrap";
 import { AppDispatch, RootState } from "../../../stateManagement/store";
 import { useDispatch, useSelector } from "react-redux";
 import { ActualizarUsuario, FormatDate } from "../../../utils/UserUtils";
-import { User } from "../../../models/user";
 
 const ProfileForm = () => {
   const user = useSelector((state: RootState) => state.auth.user);
-  console.log("🚀 ~ ProfileForm ~ user:", user)
   const [profile, setProfile] = useState(user);
   const dispatch = useDispatch<AppDispatch>();
 
   const [isModified, setIsModified] = useState(false);
+
+  useEffect(() => {
+    console.log("Usuario actual:", user);
+  }, [user])
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -24,16 +27,7 @@ const ProfileForm = () => {
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Perfil actualizado:", profile);
-    const usuario = {
-        uid: profile?.uid ?? '',
-        nombres: profile?.nombres ?? '',
-        email: profile?.email ?? '',
-        fecha_nacimiento: profile?.fecha_nacimiento 
-            ? FormatDate(profile.fecha_nacimiento) 
-            : ""
-    } as User;
-    ActualizarUsuario(profile?.uid ?? '',usuario,dispatch)
+    ActualizarUsuario(profile?.uid ?? '',profile,dispatch)
     setIsModified(false);
   };
   
@@ -44,10 +38,10 @@ const ProfileForm = () => {
 
   return (
     <Form onSubmit={handleSubmit} className="p-4 border rounded bg-light">
-      <FloatingLabel controlId="name" label="Nombre Completo" className="mb-3">
+      <FloatingLabel controlId="nombres" label="Nombre Completo" className="mb-3">
         <Form.Control 
           type="text" 
-          name="name" 
+          name="nombres" 
           value={profile?.nombres} 
           onChange={handleChange} 
           required 
