@@ -27,7 +27,7 @@ export const getSearchHistory = async (uid: string, limit?: number) => {
 
         if(result?.data?.getAllHistorialConsumption?.data == null) return [];
 
-        const datos = result?.data?.getHistorialSearchWithLimit?.data.forEach((element: any) => {
+        const datos = result?.data?.getHistorialSearchWithLimit?.data?.data.forEach((element: any) => {
             if (element?.fecha_busqueda?._seconds) {
                 element.fecha_busqueda = new Date(
                     element.fecha_busqueda._seconds * 1000
@@ -35,6 +35,7 @@ export const getSearchHistory = async (uid: string, limit?: number) => {
             }
             return element;
         })
+        console.log("🚀 ~ datos ~ datos:", datos)
   
         if(result?.data?.getHistorialSearchWithLimit?.data?.success) return datos;
         return null;
@@ -70,7 +71,7 @@ export const getSearchHistoryByDays = async (uid: string, days: number) => {
 
       if(result?.data?.getAllHistorialConsumption?.data == null) return [];
 
-      const datos = result?.data?.getHistorialSearchByDay?.data.forEach((element: any) => {
+      const datos = result?.data?.getHistorialSearchByDay?.data?.data.forEach((element: any) => {
           if (element?.fecha_busqueda?._seconds) {
               element.fecha_busqueda = new Date(
                   element.fecha_busqueda._seconds * 1000
@@ -109,19 +110,23 @@ export const getAllSearchHistory = async (uid: string) => {
 
         const response = await fetch("http://34.2.5.32:3003/", requestOptions);
         const result = await response.json();
+        console.log("🚀 ~ getAllSearchHistory ~ result:", result)
 
-        if(result?.data?.getAllHistorialConsumption?.data == null) return [];
+        console.log("🚀 ~ getAllSearchHistory ~ result?.data?.getAllHistorialSearch?.data?.data:", result?.data?.getAllHistorialSearch?.data?.data)
+        if(!result?.data?.getAllHistorialSearch?.data?.data) return [];
 
-        const datos = result?.data?.getAllHistorialConsumption?.data.forEach((element: any) => {
+        const datos = result?.data?.getAllHistorialSearch?.data?.data.map((element: any) => {
             if (element?.fecha_busqueda?._seconds) {
                 element.fecha_busqueda = new Date(
                     element.fecha_busqueda._seconds * 1000
                 ).toISOString();
             }
+            console.log("🚀 ~ datos ~ element:", element)
             return element;
         })
+        console.log("🚀 ~ datos ~ datos:", datos)   
 
-        if(result?.data?.getAllHistorialConsumption?.data?.success) return datos;
+        if(result?.data?.getAllHistorialSearch?.data?.success) return datos;
         return null;
     } catch (error) {
         console.error("Error al get all usuario:", error);
@@ -191,7 +196,7 @@ export const deleteSearchHistory = async (uid: string, recordId: string) => {
   
         const response = await fetch("http://34.2.5.32:3003/", requestOptions)
         const result = await response.json()  // 👈 Parseamos JSON en lugar de .text(
-        if(result.data.createUser.success){
+        if(result?.data?.deleteHistorialSearch?.data?.data?.success){
             return true
         }
         return false

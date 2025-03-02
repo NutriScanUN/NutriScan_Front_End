@@ -1,15 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useSelector } from "react-redux";
-import { RootState } from "../../../stateManagement/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../stateManagement/store";
+import { deleteSearchHistory } from "../../../services/SearchHistoryService";
+import { setHistorialBusqueda } from "../../../stateManagement/authSlice";
+import { parseFecha } from "../../../utils/ConsumptionHistoryUtils";
 
 const SearchHistoryTable: React.FC = () => {
-  const historial = useSelector((state: RootState) => state.auth.historial_busqueda);
-  const [searchHistoryData, setSearchHistoryData] = useState([...historial]);
+  const uid = useSelector((state: RootState) => state.auth.user?.uid ?? '');
+  const historial = useSelector((state: RootState) => state.auth.historial_busqueda ?? []);
+  const [searchHistoryData, setSearchHistoryData] = useState(historial);
+  console.log("🚀 ~ searchHistoryData:", searchHistoryData)
+  const dispatch = useDispatch<AppDispatch>();
 
-  const deleteRecord = (id?: string) => {
-    if (id) {
-      setSearchHistoryData(prevData => prevData.filter(record => record.id !== id));
+
+  useEffect(() => {
+    setSearchHistoryData(historial);
+  }, [historial]); // Se actualiza cuando `historial` cambia
+
+  const deleteRecord = (id: string) => {
+    try {
+      const response = deleteSearchHistory(uid, id);
+      if(! response) return;
+      setSearchHistoryData((prevState) => {
+        const filter = prevState.filter((item) => item.id !== id)
+        dispatch(setHistorialBusqueda(filter))
+        return filter;
+      });
+    } catch (error) {
+      console.error("🚀 ~ handleDelete ~ error:", error)
     }
   };
 
@@ -30,16 +49,16 @@ const SearchHistoryTable: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {searchHistoryData.map((record) => (
+            {searchHistoryData?.length > 0 && searchHistoryData?.map((record) => (
               <tr key={record.id}>
                 <td>{record.id}</td>
-                <td>{new Date(record.fecha_busqueda.getTime() * 1000).toLocaleString()}</td>
+                <td>{parseFecha(String(record.fecha_busqueda)).toLocaleString()}</td>
                 <td>{record.id_producto}</td>
                 <td>{record.redireccion_tienda ? 'Sí' : 'No'}</td>
                 <td>{record.id_tienda || 'N/A'}</td>
                 <td>{record.activo ? 'Sí' : 'No'}</td>
                 <td>
-                  <button className="btn btn-danger btn-sm" onClick={() => deleteRecord(record.id)}>
+                  <button className="btn btn-danger btn-sm" onClick={() => deleteRecord(record.id ?? '')}>
                     Borrar
                   </button>
                 </td>

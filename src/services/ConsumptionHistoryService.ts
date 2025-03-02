@@ -150,11 +150,13 @@ export const deleteConsumptionHistory = async (uid: string, recordId: string) =>
           body: raw,
           redirect: "follow"
       };
-
-      const response = await fetch("http://34.2.5.32:3003/", requestOptions);
-      const result = await response.json();
-
-      return result.data.userQuery.data as ConsumptionHistoryQuery;
+  
+      const response = await fetch("http://34.2.5.32:3003/", requestOptions)
+      const result = await response.json()  // 👈 Parseamos JSON en lugar de .text(
+      if(result?.data?.deleteHistorialConsumption?.data?.data?.success){
+          return true
+      }
+      return false
   } catch (error) {
       console.error("Error al get all usuario:", error);
       return null;

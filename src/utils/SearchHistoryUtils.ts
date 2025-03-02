@@ -10,7 +10,7 @@ export const GetHistorialBusqueda = async (userId: string, dispatch: any): Promi
     
     const respConsump = await getAllConsumptionHistory(userId)
     console.log("🚀 ~ GetHistorialBusqueda ~ respConsump:", respConsump)
-    dispatch(setHistorialConsumo(respSearch))
+    dispatch(setHistorialConsumo(respConsump))
     
   } catch (error) {
     console.error("🚀 ~ GetHistorialBusqueda ~ error:", error)

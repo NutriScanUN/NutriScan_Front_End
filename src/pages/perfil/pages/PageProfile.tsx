@@ -9,12 +9,7 @@ const ProfileForm = () => {
   const [profile, setProfile] = useState(user);
   const dispatch = useDispatch<AppDispatch>();
 
-  const [isModified, setIsModified] = useState(false);
-
-  useEffect(() => {
-    console.log("Usuario actual:", user);
-  }, [user])
-  
+  const [isModified, setIsModified] = useState(false);  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
