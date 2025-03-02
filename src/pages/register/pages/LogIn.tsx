@@ -10,6 +10,7 @@ import { ObtenerUsuario } from "../../../utils/UserUtils";
 import { checkUserExists } from "../../../services/userService";
 import { useNavigate } from "react-router";
 import { Alert } from "react-bootstrap";
+import { GetHistorialBusqueda } from "../../../utils/SearchHistoryUtils";
 
 const LogIn = () => {
   const [validated, setValidated] = useState(false);
@@ -34,6 +35,7 @@ const LogIn = () => {
       if(await checkUserExists(userCredential.user.uid)){
         console.log("Usuario autenticado:", userCredential.user);
         ObtenerUsuario(userCredential.user.uid,dispatch)
+        GetHistorialBusqueda(userCredential.user.uid,dispatch)
       }else{
         Alert(<p>No estas registrado.</p>)
         navigate('/signIn')

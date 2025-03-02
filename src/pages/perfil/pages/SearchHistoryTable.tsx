@@ -1,51 +1,74 @@
-import { useState } from "react";
-import { searchHistoryDataTest } from "../../../models/HistorialSearch";
+import { useEffect, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../stateManagement/store";
+import { deleteSearchHistory } from "../../../services/SearchHistoryService";
+import { setHistorialBusqueda } from "../../../stateManagement/authSlice";
+import { parseFecha } from "../../../utils/ConsumptionHistoryUtils";
 
 const SearchHistoryTable: React.FC = () => {
-  const [searchHistoryData, setSearchHistoryData] = useState(searchHistoryDataTest);
+  const uid = useSelector((state: RootState) => state.auth.user?.uid ?? '');
+  const historial = useSelector((state: RootState) => state.auth.historial_busqueda ?? []);
+  const [searchHistoryData, setSearchHistoryData] = useState(historial);
+  console.log("🚀 ~ searchHistoryData:", searchHistoryData)
+  const dispatch = useDispatch<AppDispatch>();
 
-  const deleteRecord = (id?: string) => {
-    if (id) {
-      setSearchHistoryData(prevData => prevData.filter(record => record.id !== id));
+
+  useEffect(() => {
+    setSearchHistoryData(historial);
+  }, [historial]); // Se actualiza cuando `historial` cambia
+
+  const deleteRecord = (id: string) => {
+    try {
+      const response = deleteSearchHistory(uid, id);
+      if(! response) return;
+      setSearchHistoryData((prevState) => {
+        const filter = prevState.filter((item) => item.id !== id)
+        dispatch(setHistorialBusqueda(filter))
+        return filter;
+      });
+    } catch (error) {
+      console.error("🚀 ~ handleDelete ~ error:", error)
     }
   };
 
   return (
     <div className="container mt-4">
       <h2>Historial de Búsqueda</h2>
-      <table className="table table-striped">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Fecha de Búsqueda</th>
-            <th>ID Producto</th>
-            <th>Redirección a Tienda</th>
-            <th>ID Tienda</th>
-            <th>Activo</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {searchHistoryData.map((record) => (
-            <tr key={record.id}>
-              <td>{record.id}</td>
-              <td>{new Date(record.fecha_busqueda.getTime() * 1000).toLocaleString()}</td>
-              <td>{record.id_producto}</td>
-              <td>{record.redireccion_tienda ? 'Sí' : 'No'}</td>
-              <td>{record.id_tienda || 'N/A'}</td>
-              <td>{record.activo ? 'Sí' : 'No'}</td>
-              <td>
-                <button className="btn btn-danger btn-sm" onClick={() => deleteRecord(record.id)}>
-                  Borrar
-                </button>
-              </td>
+      <div className="table-responsive" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+        <table className="table table-striped">
+          <thead style={{ position: 'sticky', top: 0, backgroundColor: 'white', zIndex: 2 }}>
+            <tr>
+              <th>ID</th>
+              <th>Fecha de Búsqueda</th>
+              <th>ID Producto</th>
+              <th>Redirección a Tienda</th>
+              <th>ID Tienda</th>
+              <th>Activo</th>
+              <th>Acciones</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {searchHistoryData?.length > 0 && searchHistoryData?.map((record) => (
+              <tr key={record.id}>
+                <td>{record.id}</td>
+                <td>{parseFecha(String(record.fecha_busqueda)).toLocaleString()}</td>
+                <td>{record.id_producto}</td>
+                <td>{record.redireccion_tienda ? 'Sí' : 'No'}</td>
+                <td>{record.id_tienda || 'N/A'}</td>
+                <td>{record.activo ? 'Sí' : 'No'}</td>
+                <td>
+                  <button className="btn btn-danger btn-sm" onClick={() => deleteRecord(record.id ?? '')}>
+                    Borrar
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
-  );
+  );  
 };
 
 export default SearchHistoryTable;

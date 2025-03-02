@@ -1,23 +1,19 @@
 
-import axios from "axios";
-import { SearchHistory, SearchHistoryQuery } from "../models/HistorialSearch";
-import { ConsumptionHistoryQuery } from "../models/HistorialConsumption";
+import { SearchHistory } from "../models/HistorialSearch";
 
-const API_BASE_URL = "https://localhost:3006/search-history";
-
-export const getSearchHistory = async (uid: string, limit?: number, orderDirection: "asc" | "desc" = "asc") => {
-    console.log("🚀 ~ getUser ~ uid:", uid)
+export const getSearchHistory = async (uid: string, limit?: number) => {
     try {
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
         const raw = JSON.stringify({
-          "query": "query GetSearch($getSearchId: String) {\r\n  getSearch(id: $getSearchId) {\r\n    id\r\n    fecha_busqueda\r\n    id_producto\r\n    redireccion_tienda\r\n    id_tienda\r\n    activo\r\n  }\r\n}",
-          "variables": {
-              "getSearchId": uid
-          },
-          "operationName": "GetSearch"
-      });
+            "query": "query GetHistorialSearchWithLimit($uid: String, $limit: Int) {\r\n  getHistorialSearchWithLimit(uid: $uid, limit: $limit) {\r\n    success\r\n    data {\r\n      success\r\n      data {\r\n        ... on HistorialSearch {\r\n          id\r\n          uid\r\n          id_producto\r\n          fecha_busqueda\r\n          id_tienda\r\n          redireccion_tienda\r\n          activo\r\n        }\r\n      }\r\n    }\r\n  }\r\n}",
+            "variables": {
+                "uid": uid,
+                "limit": limit ?? 0
+            },
+            "operationName": "GetHistorialSearchWithLimit"
+        });
 
         const requestOptions: RequestInit  = {
             method: "POST",
@@ -29,14 +25,20 @@ export const getSearchHistory = async (uid: string, limit?: number, orderDirecti
         const response = await fetch("http://34.2.5.32:3003/", requestOptions);
         const result = await response.json();
 
-        if (result?.data?.userQuery?.data?.fecha_nacimiento?._seconds) {
-            result.data.userQuery.data.fecha_nacimiento = new Date(
-                result.data.userQuery.data.fecha_nacimiento._seconds * 1000
-            ).toISOString();
-        }
+        if(result?.data?.getAllHistorialConsumption?.data == null) return [];
 
-        console.log("result", result);
-        return result.data.userQuery.data as SearchHistoryQuery;
+        const datos = result?.data?.getHistorialSearchWithLimit?.data?.data.forEach((element: any) => {
+            if (element?.fecha_busqueda?._seconds) {
+                element.fecha_busqueda = new Date(
+                    element.fecha_busqueda._seconds * 1000
+                ).toISOString();
+            }
+            return element;
+        })
+        console.log("🚀 ~ datos ~ datos:", datos)
+  
+        if(result?.data?.getHistorialSearchWithLimit?.data?.success) return datos;
+        return null;
     } catch (error) {
         console.error("Error al obtener usuario:", error);
         return null;
@@ -44,17 +46,17 @@ export const getSearchHistory = async (uid: string, limit?: number, orderDirecti
 };
 
 export const getSearchHistoryByDays = async (uid: string, days: number) => {
-  console.log("🚀 ~ getUser ~ uid:", uid)
   try {
       const myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
 
       const raw = JSON.stringify({
-        "query": "query GetSearch($getSearchId: String) {\r\n  getSearch(id: $getSearchId) {\r\n    id\r\n    fecha_busqueda\r\n    id_producto\r\n    redireccion_tienda\r\n    id_tienda\r\n    activo\r\n  }\r\n}",
+        "query": "query GetHistorialSearchByDay($uid: String, $days: Int) {\r\n  getHistorialSearchByDay(uid: $uid, days: $days) {\r\n    success\r\n    data {\r\n      success\r\n      data {\r\n        ... on HistorialSearch {\r\n          id\r\n          id_producto\r\n          fecha_busqueda\r\n          id_tienda\r\n          redireccion_tienda\r\n          activo\r\n        }\r\n      }\r\n    }\r\n  }\r\n}",
         "variables": {
-            "getSearchId": uid
+            "uid": uid,
+            "days": days
         },
-        "operationName": "GetSearch"
+        "operationName": "GetHistorialSearchByDay"
     });
 
       const requestOptions: RequestInit  = {
@@ -67,33 +69,37 @@ export const getSearchHistoryByDays = async (uid: string, days: number) => {
       const response = await fetch("http://34.2.5.32:3003/", requestOptions);
       const result = await response.json();
 
-      if (result?.data?.userQuery?.data?.fecha_nacimiento?._seconds) {
-          result.data.userQuery.data.fecha_nacimiento = new Date(
-              result.data.userQuery.data.fecha_nacimiento._seconds * 1000
-          ).toISOString();
-      }
+      if(result?.data?.getAllHistorialConsumption?.data == null) return [];
 
-      console.log("result", result);
-      return result.data.userQuery.data as ConsumptionHistoryQuery;
+      const datos = result?.data?.getHistorialSearchByDay?.data?.data.forEach((element: any) => {
+          if (element?.fecha_busqueda?._seconds) {
+              element.fecha_busqueda = new Date(
+                  element.fecha_busqueda._seconds * 1000
+              ).toISOString();
+          }
+          return element;
+      })
+
+      if(result?.data?.getAllHistorialConsumption?.data?.success) return datos;
+      return null;
   } catch (error) {
-      console.error("Error al obtener usuario:", error);
+      console.error("Error al get usuario por dia:", error);
       return null;
   }
 };
 
 export const getAllSearchHistory = async (uid: string) => {
-    console.log("🚀 ~ getUser ~ uid:", uid)
     try {
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
         const raw = JSON.stringify({
-          "query": "query GetSearch($getSearchId: String) {\r\n  getSearch(id: $getSearchId) {\r\n    id\r\n    fecha_busqueda\r\n    id_producto\r\n    redireccion_tienda\r\n    id_tienda\r\n    activo\r\n  }\r\n}",
-          "variables": {
-              "getSearchId": uid
-          },
-          "operationName": "GetSearch"
-      });
+            "query": "query GetAllHistorialSearch($uid: String) {\r\n  getAllHistorialSearch(uid: $uid) {\r\n    success\r\n    data {\r\n      success\r\n      data {\r\n        ... on HistorialSearch {\r\n          id\r\n          id_producto\r\n          fecha_busqueda\r\n          id_tienda\r\n          redireccion_tienda\r\n          activo\r\n        }\r\n      }\r\n    }\r\n  }\r\n}",
+            "variables": {
+                "uid": uid
+            },
+            "operationName": "GetAllHistorialSearch"
+        });
 
         const requestOptions: RequestInit  = {
             method: "POST",
@@ -104,17 +110,26 @@ export const getAllSearchHistory = async (uid: string) => {
 
         const response = await fetch("http://34.2.5.32:3003/", requestOptions);
         const result = await response.json();
+        console.log("🚀 ~ getAllSearchHistory ~ result:", result)
 
-        if (result?.data?.userQuery?.data?.fecha_nacimiento?._seconds) {
-            result.data.userQuery.data.fecha_nacimiento = new Date(
-                result.data.userQuery.data.fecha_nacimiento._seconds * 1000
-            ).toISOString();
-        }
+        console.log("🚀 ~ getAllSearchHistory ~ result?.data?.getAllHistorialSearch?.data?.data:", result?.data?.getAllHistorialSearch?.data?.data)
+        if(!result?.data?.getAllHistorialSearch?.data?.data) return [];
 
-        console.log("result", result);
-        return result.data.userQuery.data as ConsumptionHistoryQuery;
+        const datos = result?.data?.getAllHistorialSearch?.data?.data.map((element: any) => {
+            if (element?.fecha_busqueda?._seconds) {
+                element.fecha_busqueda = new Date(
+                    element.fecha_busqueda._seconds * 1000
+                ).toISOString();
+            }
+            console.log("🚀 ~ datos ~ element:", element)
+            return element;
+        })
+        console.log("🚀 ~ datos ~ datos:", datos)   
+
+        if(result?.data?.getAllHistorialSearch?.data?.success) return datos;
+        return null;
     } catch (error) {
-        console.error("Error al obtener usuario:", error);
+        console.error("Error al get all usuario:", error);
         return null;
     }
 };
@@ -125,19 +140,18 @@ export const addSearchHistory = async (uid: string, history: Omit<SearchHistory,
       myHeaders.append("Content-Type", "application/json");
 
       const raw = JSON.stringify({
-        "query": "mutation Mutation($input: CreateSearchInput!) {\r\n  createSearch(input: $input) {\r\n    success\r\n  }\r\n}",
+        "query": "mutation AddHistorialSearch($input: CreateSearchInput!) {\r\n  addHistorialSearch(input: $input) {\r\n    success\r\n    data {\r\n      success\r\n      message\r\n      id\r\n    }\r\n  }\r\n}",
         "variables": {
             "input": {
-                "id": null,
                 "uid": uid,
-                "fecha_busqueda": history.fecha_busqueda,
-                "id_producto": history.id_producto,
-                "redireccion_tienda": history.redireccion_tienda,
-                "id_tienda": history.id_tienda,
-                "activo": history.activo
+                "fecha_busqueda": history?.fecha_busqueda,
+                "id_producto": history?.id_producto,
+                "redireccion_tienda": history?.redireccion_tienda,
+                "id_tienda": history?.id_tienda,
+                "activo":history?.activo 
             }
         },
-        "operationName": "Mutation"
+        "operationName": "AddHistorialSearch"
     });
 
       const requestOptions: RequestInit  = {
@@ -150,16 +164,44 @@ export const addSearchHistory = async (uid: string, history: Omit<SearchHistory,
       const response = await fetch("http://34.2.5.32:3003/", requestOptions)
       const result = await response.json()  // 👈 Parseamos JSON en lugar de .text(
       if(result.data.createUser.success){
-          console.log("result",result.data.createUser.success);
           return true
       }
       return false
   } catch (error) {
-      console.error("Error al obtener usuario:", error);
+      console.error("Error al crear usuario:", error);
       return null;
   }
 };
 
 export const deleteSearchHistory = async (uid: string, recordId: string) => {
-  await axios.delete(`${API_BASE_URL}/${uid}/${recordId}`);
+    try {
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+  
+        const raw = JSON.stringify({
+            "query": "mutation DeleteHistorialSearch($uid: ID, $recordId: ID) {\r\n  deleteHistorialSearch(uid: $uid, recordId: $recordId) {\r\n    success\r\n    data {\r\n      success\r\n      message\r\n      data {\r\n        success\r\n        message\r\n      }\r\n    }\r\n  }\r\n}",
+            "variables": {
+                "uid": uid,
+                "recordId": recordId
+            },
+            "operationName": "DeleteHistorialSearch"
+        });
+  
+        const requestOptions: RequestInit  = {
+            method: "POST",
+            headers: myHeaders,
+            body: raw,
+            redirect: "follow"
+        };
+  
+        const response = await fetch("http://34.2.5.32:3003/", requestOptions)
+        const result = await response.json()  // 👈 Parseamos JSON en lugar de .text(
+        if(result?.data?.deleteHistorialSearch?.data?.data?.success){
+            return true
+        }
+        return false
+    } catch (error) {
+        console.error("Error al delete usuario:", error);
+        return null;
+    }
 };
