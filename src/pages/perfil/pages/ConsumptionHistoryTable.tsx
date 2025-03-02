@@ -1,19 +1,22 @@
 import React, { useState } from "react";
 import { Table, Button } from "react-bootstrap";
-import { consumptionHistoryDataTest } from "../../../models/HistorialConsumption";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../stateManagement/store";
 
 const ConsumptionHistoryTable: React.FC = () => {
-    const [consumptionHistoryData, setConsumptionHistoryData] = useState(consumptionHistoryDataTest);
-  
-    const handleDelete = (id: string | undefined) => {
-      if (id) {
-        setConsumptionHistoryData((prevData) => prevData.filter((item) => item.id !== id));
-      }
-    };
-  
-    return (
+  const historial = useSelector((state: RootState) => state.auth.historial_consumo);
+  const [consumptionHistoryData, setConsumptionHistoryData] = useState([...historial]);
+
+  const handleDelete = (id: string | undefined) => {
+    if (id) {
+      setConsumptionHistoryData((prevData) => prevData.filter((item) => item.id !== id));
+    }
+  };
+
+  return (
+    <div style={{ maxHeight: '400px', overflowY: 'auto', position: 'relative' }}>
       <Table striped bordered hover>
-        <thead>
+        <thead style={{ position: 'sticky', top: 0, backgroundColor: 'white', zIndex: 2 }}>
           <tr>
             <th>ID</th>
             <th>Producto</th>
@@ -40,8 +43,9 @@ const ConsumptionHistoryTable: React.FC = () => {
           ))}
         </tbody>
       </Table>
-    );
-  };
+    </div>
+  );  
+};
   
-  export default ConsumptionHistoryTable;
+export default ConsumptionHistoryTable;
   

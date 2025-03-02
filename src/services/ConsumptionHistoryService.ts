@@ -1,12 +1,7 @@
 // services/consumptionHistoryService.ts
-import axios from "axios";
-import { formatConsumptionHistory } from "../utils/ConsumptionHistoryUtils";
 import { ConsumptionHistoryQuery } from "../models/HistorialConsumption";
 
-const API_BASE_URL = "http://localhost:3006/consumption-history";
-
 export const getAllConsumptionHistory = async (uid: string) => {
-  console.log("🚀 ~ getUser ~ uid:", uid)
   try {
       const myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
@@ -28,15 +23,21 @@ export const getAllConsumptionHistory = async (uid: string) => {
 
       const response = await fetch("http://34.2.5.32:3003/", requestOptions);
       const result = await response.json();
+      console.log("🚀 ~ getAllConsumptionHistory ~ result:", result)
 
-      if (result?.data?.userQuery?.data?.fecha_consumo?._seconds) {
-          result.data.userQuery.data.fecha_consumo = new Date(
-              result.data.userQuery.data.fecha_consumo._seconds * 1000
-          ).toISOString();
-      }
+      if(result?.data?.getAllHistorialConsumption?.data?.data == null) return [];
 
-      console.log("result", result);
-      return result.data.userQuery.data as ConsumptionHistoryQuery;
+      const datos = result?.data?.getAllHistorialConsumption?.data.forEach((element: any) => {
+          if (element?.fecha_busqueda?._seconds) {
+              element.fecha_busqueda = new Date(
+                  element.fecha_busqueda._seconds * 1000
+              ).toISOString();
+          }
+          return element;
+      })
+
+      if(result?.data?.getAllHistorialConsumption?.data?.success) return datos;
+      return null;
   } catch (error) {
       console.error("Error al get all usuario:", error);
       return null;
@@ -44,7 +45,6 @@ export const getAllConsumptionHistory = async (uid: string) => {
 };
 
 export const getConsumptionHistoryByDays = async (uid: string, days: number) => {
-  console.log("🚀 ~ getUser ~ uid:", uid)
   try {
       const myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
@@ -68,14 +68,19 @@ export const getConsumptionHistoryByDays = async (uid: string, days: number) => 
       const response = await fetch("http://34.2.5.32:3003/", requestOptions);
       const result = await response.json();
 
-      if (result?.data?.userQuery?.data?.fecha_consumo?._seconds) {
-          result.data.userQuery.data.fecha_consumo = new Date(
-              result.data.userQuery.data.fecha_consumo._seconds * 1000
-          ).toISOString();
-      }
+      if(result?.data?.getHistorialConsumptionByDay?.data == null) return [];
 
-      console.log("result", result);
-      return result.data.userQuery.data as ConsumptionHistoryQuery;
+      const datos = result?.data?.getHistorialConsumptionByDay?.data.forEach((element: any) => {
+          if (element?.fecha_busqueda?._seconds) {
+              element.fecha_busqueda = new Date(
+                  element.fecha_busqueda._seconds * 1000
+              ).toISOString();
+          }
+          return element;
+      })
+
+      if(result?.data?.getHistorialConsumptionByDay?.data?.success) return datos;
+      return null;
   } catch (error) {
       console.error("Error al get all usuario:", error);
       return null;
@@ -83,7 +88,6 @@ export const getConsumptionHistoryByDays = async (uid: string, days: number) => 
 };
 
 export const addConsumptionHistory = async (uid: string, history: Omit<ConsumptionHistoryQuery, "id">) => {
-  console.log("🚀 ~ getUser ~ uid:", uid)
   try {
       const myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
@@ -119,7 +123,6 @@ export const addConsumptionHistory = async (uid: string, history: Omit<Consumpti
           ).toISOString();
       }
 
-      console.log("result", result);
       return result.data.userQuery.data as ConsumptionHistoryQuery;
   } catch (error) {
       console.error("Error al get all usuario:", error);
@@ -128,7 +131,6 @@ export const addConsumptionHistory = async (uid: string, history: Omit<Consumpti
 };
 
 export const deleteConsumptionHistory = async (uid: string, recordId: string) => {
-  console.log("🚀 ~ getUser ~ uid:", uid)
   try {
       const myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
@@ -152,7 +154,6 @@ export const deleteConsumptionHistory = async (uid: string, recordId: string) =>
       const response = await fetch("http://34.2.5.32:3003/", requestOptions);
       const result = await response.json();
 
-      console.log("result", result);
       return result.data.userQuery.data as ConsumptionHistoryQuery;
   } catch (error) {
       console.error("Error al get all usuario:", error);

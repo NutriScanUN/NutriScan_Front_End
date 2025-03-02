@@ -49,11 +49,11 @@ export const getUser = async (uid: string): Promise<User|null> => {
         myHeaders.append("Content-Type", "application/json");
 
         const raw = JSON.stringify({
-            "query": "query Query($userQueryId: ID!) {\n  userQuery(id: $userQueryId) {\n    data {\n      url_imagen\n      uid\n      nombres\n      fecha_nacimiento\n      fecha_registro\n      rol\n      email\n    }\n  }\n}\n",
+            "query": "query UserQuery($userQueryId: ID!) {\r\n  userQuery(id: $userQueryId) {\r\n    success\r\n    data {\r\n      uid\r\n      nombres\r\n      email\r\n      url_imagen\r\n      fecha_registro\r\n      fecha_nacimiento\r\n      rol\r\n    }\r\n  }\r\n}",
             "variables": {
-                "userQueryId": `${uid}`
+                "userQueryId": uid
             },
-            "operationName": "Query"
+            "operationName": "UserQuery"
         });
 
         const requestOptions: RequestInit  = {
@@ -77,7 +77,7 @@ export const getUser = async (uid: string): Promise<User|null> => {
             ).toISOString();
         }
 
-        console.log("result", result);
+        console.log("result user", result);
         return result.data.userQuery.data as User;
     } catch (error) {
         console.error("Error al obtener usuario:", error);
