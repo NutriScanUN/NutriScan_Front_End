@@ -1,6 +1,8 @@
 
 import { SearchHistory } from "../models/HistorialSearch";
 
+const API_URI = import.meta.env.VITE_API_GATEWAY_URI;
+
 export const getSearchHistory = async (uid: string, limit?: number) => {
     try {
         const myHeaders = new Headers();
@@ -22,7 +24,7 @@ export const getSearchHistory = async (uid: string, limit?: number) => {
             redirect: "follow"
         };
 
-        const response = await fetch("http://34.2.5.32:3003/", requestOptions);
+        const response = await fetch(API_URI, requestOptions);
         const result = await response.json();
 
         if(result?.data?.getAllHistorialConsumption?.data == null) return [];
@@ -66,7 +68,7 @@ export const getSearchHistoryByDays = async (uid: string, days: number) => {
           redirect: "follow"
       };
 
-      const response = await fetch("http://34.2.5.32:3003/", requestOptions);
+      const response = await fetch(API_URI, requestOptions);
       const result = await response.json();
 
       if(result?.data?.getAllHistorialConsumption?.data == null) return [];
@@ -108,7 +110,7 @@ export const getAllSearchHistory = async (uid: string) => {
             redirect: "follow"
         };
 
-        const response = await fetch("http://34.2.5.32:3003/", requestOptions);
+        const response = await fetch(API_URI, requestOptions);
         const result = await response.json();
         console.log("🚀 ~ getAllSearchHistory ~ result:", result)
 
@@ -161,12 +163,12 @@ export const addSearchHistory = async (uid: string, history: Omit<SearchHistory,
           redirect: "follow"
       };
 
-      const response = await fetch("http://34.2.5.32:3003/", requestOptions)
+      const response = await fetch(API_URI, requestOptions)
       const result = await response.json()  // 👈 Parseamos JSON en lugar de .text(
-      if(result.data.createUser.success){
-          return true
+      if(result.data.addHistorialSearch.success){
+          return result.data.addHistorialSearch.data as {id: string, message: string, success: boolean}
       }
-      return false
+      return null
   } catch (error) {
       console.error("Error al crear usuario:", error);
       return null;
@@ -194,7 +196,7 @@ export const deleteSearchHistory = async (uid: string, recordId: string) => {
             redirect: "follow"
         };
   
-        const response = await fetch("http://34.2.5.32:3003/", requestOptions)
+        const response = await fetch(API_URI, requestOptions)
         const result = await response.json()  // 👈 Parseamos JSON en lugar de .text(
         if(result?.data?.deleteHistorialSearch?.data?.data?.success){
             return true

@@ -4,6 +4,9 @@ import ProductMiniature from "./ProductMiniature";
 import ProductInfo from "./ProductInfo";
 import { useState } from "react";
 import { getOffProduct } from "../utils/ProductsUtils";
+import { addSearchHistoryDBAndState } from "../utils/SearchHistoryUtils";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../stateManagement/store";
 
 interface Props{
   products: DBProduct[]
@@ -11,21 +14,30 @@ interface Props{
 }
 
 const ProductsGrid = ({products, hoverCache = false}:Props) => {
+
+  const uid = useSelector((state:RootState) => state.auth.user?.uid)
+  const history = useSelector((state:RootState) => state.auth.historial_busqueda)
+
+  const dispatch = useDispatch<AppDispatch>();
+
   const [productShow, setProductShow] = useState<productOffRes | null>(null);
   const [show, setShow] = useState(false);
   const [spinnerShow, setSpinnerShow] = useState(false);
 
-  const requestOffProduct = (reference: string) => {
+  const requestOffProduct = async (reference: string) => {
     setSpinnerShow(true);
-    getOffProduct(reference).then(
-      productOff => {
-        if(productOff){
-          setProductShow(productOff);
-          setShow(true)
-        }
-        setSpinnerShow(false);
+    const productOff = await getOffProduct(reference)
+      if(productOff){
+        setProductShow(productOff);
+        setShow(true);
+
+        if(uid) addSearchHistoryDBAndState(uid, {
+          activo: true,
+          fecha_busqueda: Date(),
+          id_producto: productOff.producto.referencia,
+        }, history, dispatch)
       }
-    )
+      setSpinnerShow(false);
   }
 
   const handleClose = () => {

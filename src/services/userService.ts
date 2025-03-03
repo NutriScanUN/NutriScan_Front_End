@@ -1,5 +1,7 @@
 import { Roles, User } from "../models/user";
 
+const API_URI = import.meta.env.VITE_API_GATEWAY_URI;
+
 export const createUser = async (userData: User) => {
     try {
         const myHeaders = new Headers();
@@ -29,7 +31,7 @@ export const createUser = async (userData: User) => {
             redirect: "follow"
         };
 
-        const response = await fetch("http://34.2.5.32:3003/", requestOptions)
+        const response = await fetch(API_URI, requestOptions)
         const result = await response.json()  // 👈 Parseamos JSON en lugar de .text(
         if(result.data.createUser.success){
             console.log("result",result.data.createUser.success);
@@ -63,7 +65,7 @@ export const getUser = async (uid: string): Promise<User|null> => {
             redirect: "follow"
         };
 
-        const response = await fetch("http://34.2.5.32:3003/", requestOptions);
+        const response = await fetch(API_URI, requestOptions);
         const result = await response.json();
 
         if (result?.data?.userQuery?.data?.fecha_nacimiento?._seconds) {
@@ -127,7 +129,7 @@ export const updateUserById = async (uid: string, updates: User) => {
             redirect: "follow"
         };
 
-        const response = await fetch("http://34.2.5.32:3003/", requestOptions);
+        const response = await fetch(API_URI, requestOptions);
         console.log("🚀 ~ updateUserById ~ requestOptions:", requestOptions)
         const result = await response.json();
         console.log("🚀 ~ updateUserById ~ result:", result)

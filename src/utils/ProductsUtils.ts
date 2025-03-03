@@ -11,6 +11,11 @@ interface ProductListQueryRes{
     getProducts: DBProduct[];
   }
 }
+interface ProductOFFQueryRes{
+  data:{
+    getInfoOff: productOffRes;
+  }
+}
 
 let OffCache: Cache | null = null;
 window.caches.open("off-products").then(cache => OffCache = cache);
@@ -34,6 +39,40 @@ const DBPRoductListQuery = `query GetProducts {
     nombre
     referencia
     url_imagen
+  }
+}`;
+
+const OFFproductQuery = `query InfoProducto($getInfoOffId: String) {
+  getInfoOff(id: $getInfoOffId) {
+    infoProducto {
+      azucar
+      cantidad
+      carbohidratos
+      energia
+      fibra
+      grasaSaturada
+      grasas
+      imagenFrontalUrl
+      nivelesAltos
+      proteina
+      sodio
+      unidadAzucar
+      unidadSodio
+      unidadProteina
+      unidadGrasas
+      unidadGrasaSaturada
+      unidadFibra
+      unidadEnergia
+      unidadCarbohidratos
+      unidadCantidad
+    }
+    producto {
+      categorias
+      foto
+      nombre
+      nutriscore
+      referencia
+    }
   }
 }`;
 
@@ -118,34 +157,35 @@ export async function getNOrLessProducts(num: number){
 
 //TODO: IMPLEMENT CORRECTLY
 export async function getOffProduct(reference: string){
-  // const productQuery: GraphQLQuery = {
-  //   query: DBProductQuery,
-  //   operationName: "GetProduct",
-  //   variables: { getProductId: reference }
-  // };
+  const productQuery: GraphQLQuery = {
+    query: OFFproductQuery,
+    operationName: "InfoProducto",
+    variables: { getInfoOffId: reference }
+  };
 
-  // const productRequest: RequestInit = {
-  //   ...REQUEST,
-  //   body: JSON.stringify(productQuery)
-  // }
+  const productRequest: RequestInit = {
+    ...REQUEST,
+    body: JSON.stringify(productQuery)
+  }
 
   try{
-    const url = `${STORE_API}/off/${reference}`;
+    const url = API_URI;
+    const request = new Request(url, productRequest);
 
     if(OffCache){
-      const cache = await OffCache.match(url);
+      const cache = await OffCache.match(request);
   
       if(cache){
-        return (await cache.json() as productOffRes);
+        return ((await cache.json() as ProductOFFQueryRes).data.getInfoOff);
       }
     }
 
-    const resp = await fetch(url);
+    const resp = await fetch(request);
 
     if(resp.ok){
-      OffCache?.put(url, resp.clone());
-      setTimeout(() => OffCache?.delete(url), 1000 * 60 * 5);
-      return (await resp.json() as productOffRes);
+      OffCache?.put(request, resp.clone());
+      setTimeout(() => OffCache?.delete(request), 1000 * 60 * 5);
+      return ((await resp.json() as ProductOFFQueryRes).data.getInfoOff);
     }
   }catch(error: any){
     console.error(error)

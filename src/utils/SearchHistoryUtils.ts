@@ -1,8 +1,11 @@
+import { SearchHistory } from "../models/HistorialSearch";
 import { getAllConsumptionHistory } from "../services/ConsumptionHistoryService";
-import { getAllSearchHistory } from "../services/SearchHistoryService";
+import { addSearchHistory, getAllSearchHistory } from "../services/SearchHistoryService";
 import { setHistorialBusqueda, setHistorialConsumo } from "../stateManagement/authSlice";
+import { AppDispatch } from "../stateManagement/store";
 
-export const GetHistorialBusqueda = async (userId: string, dispatch: any): Promise<void> => {
+
+export const GetHistorialBusqueda = async (userId: string, dispatch: AppDispatch): Promise<void> => {
   try {
     const respSearch = await getAllSearchHistory(userId)
     console.log("🚀 ~ GetHistorialBusqueda ~ respSearch:", respSearch)
@@ -15,5 +18,13 @@ export const GetHistorialBusqueda = async (userId: string, dispatch: any): Promi
   } catch (error) {
     console.error("🚀 ~ GetHistorialBusqueda ~ error:", error)
     throw error
+  }
+}
+
+export const addSearchHistoryDBAndState = async (uid: string, history: Omit<SearchHistory, "id">, prevHistory: SearchHistory[], dispatch: AppDispatch) => {
+  const res = await addSearchHistory(uid, history);
+  if(res){
+    const newHistory = [...prevHistory, {...history, id: res.id}];
+    dispatch(setHistorialBusqueda(newHistory));
   }
 }

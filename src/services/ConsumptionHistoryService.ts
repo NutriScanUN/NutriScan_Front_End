@@ -1,6 +1,8 @@
 // services/consumptionHistoryService.ts
 import { ConsumptionHistoryQuery } from "../models/HistorialConsumption";
 
+const API_URI = import.meta.env.VITE_API_GATEWAY_URI;
+
 export const getAllConsumptionHistory = async (uid: string) => {
   try {
       const myHeaders = new Headers();
@@ -21,7 +23,7 @@ export const getAllConsumptionHistory = async (uid: string) => {
           redirect: "follow"
       };
 
-      const response = await fetch("http://34.2.5.32:3003/", requestOptions);
+      const response = await fetch(API_URI, requestOptions);
       const result = await response.json();
       console.log("🚀 ~ getAllConsumptionHistory ~ result:", result)
 
@@ -65,7 +67,7 @@ export const getConsumptionHistoryByDays = async (uid: string, days: number) => 
           redirect: "follow"
       };
 
-      const response = await fetch("http://34.2.5.32:3003/", requestOptions);
+      const response = await fetch(API_URI, requestOptions);
       const result = await response.json();
 
       if(result?.data?.getHistorialConsumptionByDay?.data == null) return [];
@@ -114,7 +116,7 @@ export const addConsumptionHistory = async (uid: string, history: Omit<Consumpti
           redirect: "follow"
       };
 
-      const response = await fetch("http://34.2.5.32:3003/", requestOptions);
+      const response = await fetch(API_URI, requestOptions);
       const result = await response.json();
 
       if (result?.data?.userQuery?.data?.fecha_consumo?._seconds) {
@@ -151,7 +153,7 @@ export const deleteConsumptionHistory = async (uid: string, recordId: string) =>
           redirect: "follow"
       };
   
-      const response = await fetch("http://34.2.5.32:3003/", requestOptions)
+      const response = await fetch(API_URI, requestOptions)
       const result = await response.json()  // 👈 Parseamos JSON en lugar de .text(
       if(result?.data?.deleteHistorialConsumption?.data?.data?.success){
           return true
