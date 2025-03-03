@@ -17,12 +17,12 @@ export const RoutesStore = () => {
             tieneStore?
             <>
                 <Route path="/" element={<PageInformationStore/>}></Route>
+                <Route path="/products" element={<TableProducts/>}></Route>
+                <Route path="/addProduct" element={<CrearProducto/>}></Route>
             </>:
             <>
                 <Route path="/" element={<CrearTiendaPage/>}></Route>
                 <Route path="/ViewTienda/:idTienda" element={<ViewTienda/>}></Route>
-                <Route path="/products" element={<TableProducts/>}></Route>
-                <Route path="/addProduct" element={<CrearProducto/>}></Route>
             </>
         }
       </Route>

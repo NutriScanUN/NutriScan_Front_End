@@ -13,11 +13,11 @@ const ViewTienda: React.FC = () => {
     useEffect(() => {
       // Simulación de consulta de la tienda
       const tiendasEjemplo: ViewOfTienda[] = [
-        { tienda_id: 101, nombre: "Tienda A", direccion: "Calle 123", enlace: "https://www.google.com/" },
-        { tienda_id: 102, nombre: "Tienda B", direccion: "Avenida 456", enlace: "https://www.google.com/" },
+        { id_tienda: 101, nombre: "Tienda A", direccion: "Calle 123", enlace: "https://www.google.com/" },
+        { id_tienda: 102, nombre: "Tienda B", direccion: "Avenida 456", enlace: "https://www.google.com/" },
       ];
   
-      const tiendaEncontrada = tiendasEjemplo.find(t => t.tienda_id === Number(idTienda));
+      const tiendaEncontrada = tiendasEjemplo.find(t => t.id_tienda === Number(idTienda));
       setTienda(tiendaEncontrada || null);
   
       // Simulación de consulta de productos de la tienda
