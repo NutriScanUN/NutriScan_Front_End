@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../stateManagement/store";
 import { setHistorialConsumo } from "../../../stateManagement/authSlice";
 import { deleteConsumptionHistory } from "../../../services/ConsumptionHistoryService";
+import { DatesFixUp } from "../../../utils/ConsumptionHistoryUtils";
 
 const ConsumptionHistoryTable: React.FC = () => {
   const uid = useSelector((state: RootState) => state.auth.user?.uid ?? '');
@@ -43,7 +44,7 @@ const ConsumptionHistoryTable: React.FC = () => {
             <tr key={item.id}>
               <td>{item.id}</td>
               <td>{item.id_producto}</td>
-              <td>{new Date(item.fecha_consumo).toLocaleString()}</td>
+              <td>{DatesFixUp(item.fecha_consumo)}</td>
               <td>{item.cantidad_consumida}</td>
               <td>
                 <Table striped bordered hover>

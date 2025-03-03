@@ -30,3 +30,12 @@ export const addConsumeHistoryDBAndState = async (uid: string, history: Omit<Con
   return res;
 }
 
+
+
+export const DatesFixUp = (date: string) => {
+  const parsed = parseFecha(String(date)).toLocaleString()
+
+  if(parsed === "Invalid Date") return new Date(date).toLocaleString();
+  
+  return parsed;
+}
