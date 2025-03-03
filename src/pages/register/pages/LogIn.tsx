@@ -11,6 +11,7 @@ import { checkUserExists } from "../../../services/userService";
 import { useNavigate } from "react-router";
 import { Alert } from "react-bootstrap";
 import { GetHistorialBusqueda } from "../../../utils/SearchHistoryUtils";
+import { getUserStore } from "../../../utils/TiendaUtils";
 
 const LogIn = () => {
   const [validated, setValidated] = useState(false);
@@ -34,8 +35,9 @@ const LogIn = () => {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       if(await checkUserExists(userCredential.user.uid)){
         console.log("Usuario autenticado:", userCredential.user);
-        ObtenerUsuario(userCredential.user.uid,dispatch)
-        GetHistorialBusqueda(userCredential.user.uid,dispatch)
+        ObtenerUsuario(userCredential.user.uid,dispatch);
+        GetHistorialBusqueda(userCredential.user.uid,dispatch);
+        getUserStore(userCredential.user.uid, dispatch);
         navigate('/')
       }else{
         Alert(<p>No estas registrado.</p>)

@@ -1,19 +1,17 @@
 import React, { useState } from "react";
 import { Form, Button, Container, Row, Col, Alert } from "react-bootstrap";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../stateManagement/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../stateManagement/store";
+import { Tienda } from "../../../models/Tienda";
+import { addStoreToUser, updateUserStore } from "../../../utils/TiendaUtils";
 
 const CrearTiendaPage: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+
   const uid = useSelector((state:RootState) => state.auth.user?.uid)
-  const [formData, setFormData] = useState({
-    uid: uid,
-    nombre: "",
-    fecha_suscripcion: new Date().toISOString().split("T")[0], // Fecha actual
-    direccion: "",
-    descripcion: "",
-    fotos: "",
-    enlace: "",
-  });
+  const userStore = useSelector((state:RootState) => state.store);
+
+  const [formData, setFormData] = useState<Tienda>({...userStore, uid: uid??""});
 
   const [message, setMessage] = useState<string | null>(null);
 
@@ -23,10 +21,19 @@ const CrearTiendaPage: React.FC = () => {
   };
 
   // Manejar envío del formulario
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Enviando datos:", formData);
-    setMessage("¡Tienda creada exitosamente!");
+
+    let resp = {code:400, message:"", success: false};
+
+    if(userStore.tiendaGuardada){
+      resp = await updateUserStore(userStore.id_tienda, userStore, dispatch);
+    }else{
+      resp = await addStoreToUser(formData, dispatch);
+    }
+    if(resp.success) setMessage("¡Tienda creada exitosamente!");
+    else setMessage("No se ha podido crear la tienda")
   };
 
   // Validar si todos los campos requeridos están completos
@@ -79,8 +86,8 @@ const CrearTiendaPage: React.FC = () => {
               <Form.Label>Fotos (URL)</Form.Label>
               <Form.Control
                 type="text"
-                name="fotos"
-                value={formData.fotos}
+                name="foto_tienda"
+                value={formData.foto_tienda}
                 onChange={handleChange}
                 placeholder="URL de la imagen"
               />
