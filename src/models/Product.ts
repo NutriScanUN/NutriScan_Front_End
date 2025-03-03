@@ -29,6 +29,17 @@ export interface InfoProducto{
   nivelesAltos?: string[];
 }
 
+export interface ProductNutriments{
+  carbohidratos?: string;
+  grasas?: string;
+  grasaSaturada?: string;
+  azucar?: string;
+  proteina?: string;
+  sodio?: string;
+  fibra?: string;
+  energia?: string;
+}
+
 export interface productOffRes{
   producto: ProductOff;
   infoProducto: InfoProducto;

@@ -1,3 +1,8 @@
+import { ConsumptionHistory } from "../models/HistorialConsumption";
+import { addConsumptionHistory } from "../services/ConsumptionHistoryService";
+import { setHistorialConsumo } from "../stateManagement/authSlice";
+import { AppDispatch } from "../stateManagement/store";
+
 export const parseFecha = (fechaStr: string) => {
   try {
     const [fecha, hora] = fechaStr.split(", "); // Divide la fecha y la hora
@@ -15,3 +20,13 @@ export const parseFecha = (fechaStr: string) => {
     return new Date("Invalid Date");
   }
 };
+
+export const addConsumeHistoryDBAndState = async (uid: string, history: Omit<ConsumptionHistory, "id">, prevHistory: ConsumptionHistory[], dispatch: AppDispatch) => {
+  const res = await addConsumptionHistory(uid, history);
+  if(res){
+    const newHistory = [...prevHistory, {...history, id: res.id}];
+    dispatch(setHistorialConsumo(newHistory));
+  }
+  return res;
+}
+

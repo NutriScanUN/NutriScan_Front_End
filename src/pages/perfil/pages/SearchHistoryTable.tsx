@@ -32,6 +32,14 @@ const SearchHistoryTable: React.FC = () => {
     }
   };
 
+  const DatesFixUp = (date: string) => {
+    const parsed = parseFecha(String(date)).toLocaleString()
+
+    if(parsed === "Invalid Date") return new Date(date).toLocaleString();
+    
+    return parsed;
+  }
+
   return (
     <div className="container mt-4">
       <h2>Historial de Búsqueda</h2>
@@ -52,7 +60,7 @@ const SearchHistoryTable: React.FC = () => {
             {searchHistoryData?.length > 0 && searchHistoryData?.map((record) => (
               <tr key={record.id}>
                 <td>{record.id}</td>
-                <td>{parseFecha(String(record.fecha_busqueda)).toLocaleString()}</td>
+                <td>{DatesFixUp(record.fecha_busqueda)}</td>
                 <td>{record.id_producto}</td>
                 <td>{record.redireccion_tienda ? 'Sí' : 'No'}</td>
                 <td>{record.id_tienda || 'N/A'}</td>

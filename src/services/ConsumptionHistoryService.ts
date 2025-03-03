@@ -1,5 +1,5 @@
 // services/consumptionHistoryService.ts
-import { ConsumptionHistoryQuery } from "../models/HistorialConsumption";
+import { ConsumptionHistory } from "../models/HistorialConsumption";
 
 const API_URI = import.meta.env.VITE_API_GATEWAY_URI;
 
@@ -27,22 +27,20 @@ export const getAllConsumptionHistory = async (uid: string) => {
       const result = await response.json();
       console.log("🚀 ~ getAllConsumptionHistory ~ result:", result)
 
-      if(result?.data?.getAllHistorialConsumption?.data?.data == null) return [];
+      const data = result.data.getAllHistorialConsumption.data.data;
 
-      const datos = result?.data?.getAllHistorialConsumption?.data.forEach((element: any) => {
-          if (element?.fecha_busqueda?._seconds) {
-              element.fecha_busqueda = new Date(
-                  element.fecha_busqueda._seconds * 1000
-              ).toISOString();
-          }
-          return element;
-      })
+      if(data) {
+        const history = data.map((element: any) => {
+            element.nutrientes_ingeridos = JSON.parse(element.nutrientes_ingeridos);
+            return element as ConsumptionHistory;
+        });
 
-      if(result?.data?.getAllHistorialConsumption?.data?.success) return datos;
-      return null;
+        return history as ConsumptionHistory[];
+      }
+      return [] as ConsumptionHistory[];
   } catch (error) {
       console.error("Error al get all usuario:", error);
-      return null;
+      return [] as ConsumptionHistory[];
   }
 };
 
@@ -70,26 +68,24 @@ export const getConsumptionHistoryByDays = async (uid: string, days: number) => 
       const response = await fetch(API_URI, requestOptions);
       const result = await response.json();
 
-      if(result?.data?.getHistorialConsumptionByDay?.data == null) return [];
+      const data = result.data.getHistorialConsumptionByDay.data.data;
 
-      const datos = result?.data?.getHistorialConsumptionByDay?.data.forEach((element: any) => {
-          if (element?.fecha_busqueda?._seconds) {
-              element.fecha_busqueda = new Date(
-                  element.fecha_busqueda._seconds * 1000
-              ).toISOString();
-          }
-          return element;
-      })
+      if(data) {
+        const history = data.map((element: any) => {
+            element.nutrientes_ingeridos = JSON.parse(element.nutrientes_ingeridos);
+            return element as ConsumptionHistory;
+        });
 
-      if(result?.data?.getHistorialConsumptionByDay?.data?.success) return datos;
-      return null;
+        return history as ConsumptionHistory[];
+      }
+      return [] as ConsumptionHistory[];
   } catch (error) {
       console.error("Error al get all usuario:", error);
-      return null;
+      return [] as ConsumptionHistory[];
   }
 };
 
-export const addConsumptionHistory = async (uid: string, history: Omit<ConsumptionHistoryQuery, "id">) => {
+export const addConsumptionHistory = async (uid: string, history: Omit<ConsumptionHistory, "id">) => {
   try {
       const myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
@@ -102,7 +98,7 @@ export const addConsumptionHistory = async (uid: string, history: Omit<Consumpti
                 "id_producto": history?.id_producto,
                 "fecha_consumo": history?.fecha_consumo,
                 "cantidad_consumida": history?.cantidad_consumida,
-                "nutrientes_ingeridos": history?.nutrientes_ingeridos,
+                "nutrientes_ingeridos": JSON.stringify(history?.nutrientes_ingeridos),
                 "activo": history?.activo 
             }
         },
@@ -119,13 +115,7 @@ export const addConsumptionHistory = async (uid: string, history: Omit<Consumpti
       const response = await fetch(API_URI, requestOptions);
       const result = await response.json();
 
-      if (result?.data?.userQuery?.data?.fecha_consumo?._seconds) {
-          result.data.userQuery.data.fecha_consumo = new Date(
-              result.data.userQuery.data.fecha_consumo._seconds * 1000
-          ).toISOString();
-      }
-
-      return result.data.userQuery.data as ConsumptionHistoryQuery;
+      return result.data.addHistorialConsumption.data as {id: string, message: string, success: boolean}
   } catch (error) {
       console.error("Error al get all usuario:", error);
       return null;

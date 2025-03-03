@@ -36,6 +36,7 @@ const LogIn = () => {
         console.log("Usuario autenticado:", userCredential.user);
         ObtenerUsuario(userCredential.user.uid,dispatch)
         GetHistorialBusqueda(userCredential.user.uid,dispatch)
+        navigate('/')
       }else{
         Alert(<p>No estas registrado.</p>)
         navigate('/signIn')

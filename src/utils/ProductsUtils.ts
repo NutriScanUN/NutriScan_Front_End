@@ -1,4 +1,4 @@
-import { DBProduct, productOffRes } from "../models/Product";
+import { DBProduct, InfoProducto, ProductNutriments, productOffRes } from "../models/Product";
 import { GraphQLQuery } from "../models/Query";
 
 interface ProductQueryRes{
@@ -17,8 +17,8 @@ interface ProductOFFQueryRes{
   }
 }
 
-let OffCache: Cache | null = null;
-window.caches.open("off-products").then(cache => OffCache = cache);
+// let OffCache: Cache | null = null;
+// window.caches.open("off-products").then(cache => OffCache = cache);
 
 const STORE_API = import.meta.env.VITE_TEST_STORE_URI;
 const API_URI = import.meta.env.VITE_API_GATEWAY_URI;
@@ -82,6 +82,19 @@ HEADER.append("Content-Type", "application/json");
 const REQUEST: RequestInit = {
   method: "POST",
   headers: HEADER
+}
+
+export function infoToNutriments(info: InfoProducto): ProductNutriments{
+  return {
+    carbohidratos: (info.carbohidratos)? (info.carbohidratos.toString() + (info.unidadCarbohidratos ?? "")): undefined,
+    grasas: (info.grasas)? (info.grasas.toString() + (info.unidadGrasas ?? "")): undefined,
+    grasaSaturada: (info.grasaSaturada)? (info.grasaSaturada.toString() + (info.unidadGrasaSaturada ?? "")): undefined,
+    azucar: (info.azucar)? (info.azucar.toString() + (info.unidadAzucar ?? "")): undefined,
+    proteina: (info.proteina)? (info.proteina.toString() + (info.unidadProteina ?? "")): undefined,
+    sodio: (info.sodio)? (info.sodio.toString() + (info.unidadSodio ?? "")): undefined,
+    fibra: (info.fibra)? (info.fibra.toString() + (info.unidadFibra ?? "")): undefined,
+    energia: (info.energia)? (info.energia.toString() + (info.unidadEnergia ?? "")): undefined,
+  }
 }
 
 export async function getProduct(reference: string){
@@ -172,19 +185,19 @@ export async function getOffProduct(reference: string){
     const url = API_URI;
     const request = new Request(url, productRequest);
 
-    if(OffCache){
-      const cache = await OffCache.match(request);
+    // if(OffCache){
+    //   const cache = await OffCache.match(request);
   
-      if(cache){
-        return ((await cache.json() as ProductOFFQueryRes).data.getInfoOff);
-      }
-    }
+    //   if(cache){
+    //     return ((await cache.json() as ProductOFFQueryRes).data.getInfoOff);
+    //   }
+    // }
 
     const resp = await fetch(request);
 
     if(resp.ok){
-      OffCache?.put(request, resp.clone());
-      setTimeout(() => OffCache?.delete(request), 1000 * 60 * 5);
+      // OffCache?.put(request, resp.clone());
+      // setTimeout(() => OffCache?.delete(request), 1000 * 60 * 5);
       return ((await resp.json() as ProductOFFQueryRes).data.getInfoOff);
     }
   }catch(error: any){

@@ -9,7 +9,7 @@ interface Props{
 }
 
 const ProductMiniature = ({product, hoverCache = false}: Props) => {
-  const cachedProduct = useRef(false);
+  const cachedProduct = useRef(true); //Change if caching is implemented
 
   const handleHoverCache = () => {
     if(hoverCache && !cachedProduct.current){
