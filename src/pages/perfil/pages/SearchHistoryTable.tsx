@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../stateManagement/store";
 import { deleteSearchHistory } from "../../../services/SearchHistoryService";
 import { setHistorialBusqueda } from "../../../stateManagement/authSlice";
-import { DatesFixUp, parseFecha } from "../../../utils/ConsumptionHistoryUtils";
+import { DatesFixUp } from "../../../utils/ConsumptionHistoryUtils";
 
 const SearchHistoryTable: React.FC = () => {
   const uid = useSelector((state: RootState) => state.auth.user?.uid ?? '');
